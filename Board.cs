@@ -5,12 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 
 namespace ChessGame
 {
     internal class Board
     {
         private List<ChessFigure> ChessFigures = new List<ChessFigure>();
+        System.Windows.Controls.Grid Grid { get; set; }
 
         private FigureGroup Turn = FigureGroup.White;
 
@@ -21,7 +23,7 @@ namespace ChessGame
         public const float CellHeight = 80;
         public const float BoardWidth = 640;
         public const float BoardHeight = 640;
-        public Board()
+        public Board(System.Windows.Controls.Grid Grid)
         {
             if(_gameType == GameType.Default)
             {
@@ -178,6 +180,13 @@ namespace ChessGame
                         "FigureImages/bQ.png"
                     ));
             }
+
+            Grid.Children.Clear();
+            foreach(var el in ChessFigures)
+                Grid.Children.Add(el.Image);
+
+
+
         }
 
 
@@ -195,9 +204,9 @@ namespace ChessGame
             return new Thickness
             (
                 ChessGame.Board.CellWidth * (X - 1),
-                ChessGame.Board.CellHeight * (8 - Y + 1),
+                ChessGame.Board.CellHeight * (8 - Y),
                 ChessGame.Board.CellWidth * (8 - X),
-                ChessGame.Board.CellHeight * (Y)
+                ChessGame.Board.CellHeight * (Y-1)
             );
         }
     }

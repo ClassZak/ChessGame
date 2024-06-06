@@ -22,44 +22,34 @@ namespace ChessGame.Builders
             {
                 case FigureType.Pawn:
                     figure = new Pawn(X, Y);
-                    figure.FigureGroup= figureGroup;
-                    figure.FigureType= figureType;
-                    figure.Image = ImageBuilder.CreateImage(imagePath);
                     break;
                 case FigureType.Rock:
                     figure = new Rock(X, Y);
-                    figure.FigureGroup = figureGroup;
-                    figure.FigureType = figureType;
-                    figure.Image = ImageBuilder.CreateImage(imagePath);
                     break;
                 case FigureType.Knight:
                     figure = new Knight(X, Y);
-                    figure.FigureGroup = figureGroup;
-                    figure.FigureType = figureType;
-                    figure.Image = ImageBuilder.CreateImage(imagePath);
                     break;
                 case FigureType.Bishop:
                     figure = new Bishop(X, Y);
-                    figure.FigureGroup = figureGroup;
-                    figure.FigureType = figureType;
-                    figure.Image = ImageBuilder.CreateImage(imagePath);
                     break;
                 case FigureType.King:
                     figure = new King(X, Y);
-                    figure.FigureGroup = figureGroup;
-                    figure.FigureType = figureType;
-                    figure.Image = ImageBuilder.CreateImage(imagePath);
                     break;
                 case FigureType.Queen:
                     figure = new Queen(X, Y);
-                    figure.FigureGroup = figureGroup;
-                    figure.FigureType = figureType;
-                    figure.Image = ImageBuilder.CreateImage(imagePath);
                     break;
                 default:
-                    figure = new Pawn();
-                    break;
+                    throw new ArgumentException("Wron figure type");
             }
+            figure.FigureGroup = figureGroup;
+            figure.FigureType = figureType;
+
+            figure.Image = ImageBuilder.CreateImage(imagePath);
+            figure.Image.Stretch = System.Windows.Media.Stretch.UniformToFill;
+            figure.Image.Width = Board.CellWidth;
+            figure.Image.Height = Board.CellHeight;
+            figure.CurrectMargin();
+
             return figure;
         }
     }

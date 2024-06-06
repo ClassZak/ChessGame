@@ -28,7 +28,7 @@ namespace ChessGame
         }
         public void RunGame()
         {
-            _board= new Board();
+            _board= new Board(this.Board);
         }
 
         private void F1_MouseDown(object sender, MouseButtonEventArgs e)
