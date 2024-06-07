@@ -22,81 +22,51 @@ namespace ChessGame
         public new event MouseButtonEventHandler FigureSelected;
 
 
-        public override Vector[] GetMoveCells()
+        public override List<Point> GetMoveCells()
         {
-            Vector[] vectors;
+            List<Point> points;
 
             if(FigureGroup== FigureGroup.White)
             {
-                if (Y!=2)
-                {
-                    vectors= new Vector[2];
-                    vectors[0].X = X;
-                    vectors[0].Y = Y;
-                    vectors[1].X = X;
-                    vectors[1].Y = Y+1;
-                }
-                else
-                {
-                    vectors = new Vector[3];
-                    vectors[0].X = X;
-                    vectors[0].Y = Y;
-                    vectors[1].X = X;
-                    vectors[1].Y = Y+1;
-                    vectors[2].X = X;
-                    vectors[2].Y = Y+2;
-                }
+
+                points = new List<Point>()
+                { new Point(X,Y+1) };
+                if (Y==2)
+                    points.Add(new Point(X, Y + 2));
             }
             else
             {
-                if (Y != 7)
-                {
-                    vectors = new Vector[2];
-                    vectors[0].X = X;
-                    vectors[0].Y = Y;
-                    vectors[1].X = X;
-                    vectors[1].Y = Y - 1;
-                }
-                else
-                {
-                    vectors = new Vector[3];
-                    vectors[0].X = X;
-                    vectors[0].Y = Y;
-                    vectors[1].X = X;
-                    vectors[1].Y = Y - 1;
-                    vectors[2].X = X;
-                    vectors[2].Y = Y - 2;
-                }
+                points = new List<Point>()
+                { new Point(X,Y-1) };
+                if (Y == 7)
+                    points.Add(new Point(X, Y - 2));
             }
-            
+
+            while (points.Count(x => !Board.ValidCell(x)) != 0)
+                points.RemoveAt(points.FindIndex(x => !Board.ValidCell(x)));
 
 
-            return vectors;
+            return points;
         }
 
         public override void Move(uint X, uint Y)
         {
-            throw new NotImplementedException();
+            this.X = X;
+            this.Y = Y;
+            this.CorrectMargin();
+        }
+
+        public override void Move(Point point)
+        {
+            Move((uint)point.X, (uint)point.Y);
         }
 
         public override void SelectionHandling(object sender, MouseButtonEventArgs mouseEventArgs)
         {
             Selected=!Selected;
 
-
-            Vector[] positions=GetMoveCells();
-
-            StringBuilder sb=new StringBuilder();
-            for (int i=0; i<positions.Length; i++)
-                sb.Append($"({positions[i].X},{positions[i].Y})\n");
-            
-
-            MessageBox.Show(sb.ToString(), "позиции");
-
-
-            if (FigureSelected is null)
-                return;
-            FigureSelected(sender,mouseEventArgs);
+            if (!(FigureSelected is null))
+                FigureSelected(this,mouseEventArgs);
         }
     }
 }

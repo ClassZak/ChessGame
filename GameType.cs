@@ -8,6 +8,7 @@ namespace ChessGame
 {
     internal enum GameType
     {
-        Default
+        Default,
+        Reversed
     }
 }

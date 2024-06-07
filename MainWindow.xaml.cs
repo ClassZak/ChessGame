@@ -28,6 +28,7 @@ namespace ChessGame
             RunGame();
             Thread thread = new Thread(UIUpdate);
             thread.Start();
+            InitCells();
         }
         public void RunGame()
         {
@@ -47,7 +48,41 @@ namespace ChessGame
                 {
                     return;
                 }
-                Thread.Sleep(50);
+                Thread.Sleep(11);
+            }
+        }
+
+
+        public void CellPressed(object sender, MouseButtonEventArgs e)
+        {
+            
+            _board.ResetSelection();
+            //MessageBox.Show("Клетка нажата");
+        }
+
+        private void InitCells()
+        {
+            CellsGrid.Children.Clear();
+
+            uint delta = 0;
+            
+            for (uint i=0;i!=64;++i)
+            {
+                Rectangle rectangle = new Rectangle();
+                rectangle.MouseDown += new MouseButtonEventHandler(CellPressed);
+
+                if ((i) % 8 == 0)
+                    ++delta;
+
+                uint compIndex = delta + i;
+                
+
+                if (compIndex %2 == 0)
+                    rectangle.Fill = new SolidColorBrush(Colors.White);
+                else
+                    rectangle.Fill = new SolidColorBrush(Colors.Black);
+
+                CellsGrid.Children.Add(rectangle);
             }
         }
     }

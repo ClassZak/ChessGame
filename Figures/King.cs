@@ -17,17 +17,65 @@ namespace ChessGame
             throw new NotImplementedException();
         }
 
-        public override Vector[] GetMoveCells()
+        public new event MouseButtonEventHandler FigureSelected;
+
+
+        public override List<Point> GetMoveCells()
         {
-            throw new NotImplementedException();
+            List<Point> points= new List<Point>();
+            points.Add(new Point(X - 1, Y - 1));
+            points.Add(new Point(X - 1, Y));
+            points.Add(new Point(X - 1, Y + 1));
+            points.Add(new Point(X, Y + 1));
+            points.Add(new Point(X, Y - 1));
+            points.Add(new Point(X + 1, Y - 1));
+            points.Add(new Point(X + 1, Y));
+            points.Add(new Point(X + 1, Y + 1));
+
+
+
+
+            while (points.Count(x => !Board.ValidCell(x))!=0)
+                points.RemoveAt(points.FindIndex(x => !Board.ValidCell(x)));
+            
+            for(int i=0;i<points.Count;++i)
+            {
+                if
+                (
+                    points.ElementAt(i).X<0 ||
+                    points.ElementAt(i).X>8 ||
+                    points.ElementAt(i).Y<0 ||
+                    points.ElementAt(i).Y>8
+                )
+                {
+                    points.RemoveAt(i);
+                }
+            }
+
+
+
+
+
+
+            return points;
         }
         public override void Move(uint X, uint Y)
         {
-            throw new NotImplementedException();
+            this.X = X;
+            this.Y = Y;
+            this.CorrectMargin();
+        }
+
+        public override void Move(Point point)
+        {
+            Move((uint)point.X, (uint)point.Y);
         }
         public override void SelectionHandling(object sender, MouseButtonEventArgs mouseEventArgs)
         {
-            throw new NotImplementedException();
+            Selected = !Selected;
+
+            if (!(FigureSelected is null))
+                FigureSelected(this, mouseEventArgs);
         }
     }
 }

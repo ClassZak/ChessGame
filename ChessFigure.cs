@@ -13,15 +13,15 @@ namespace ChessGame
     internal abstract class ChessFigure
     {
         public ChessFigure() { }
-        public ChessFigure(uint X,uint Y)
+        public ChessFigure(uint X, uint Y)
         {
             this.X = X;
             this.Y = Y;
         }
-        public event MouseButtonEventHandler FigureSelected;
 
 
-        public bool Selected {  get; set; }
+
+        public bool Selected { get; set; }
         public Image Image { get; set; }
         public FigureType FigureType { get; set; }
         public FigureGroup FigureGroup { get; set; }
@@ -30,12 +30,57 @@ namespace ChessGame
 
 
         public abstract void Move(uint X, uint Y);
+        public abstract void Move(Point point);
         public abstract bool CheckMove(uint X, uint Y, List<ChessFigure> chessFigures);
-        public void CurrectMargin()
+        public void CorrectMargin()
         {
-            this.Image.Margin=Board.MarginFromCoords(this.X,this.Y);
+            this.Image.Margin = Board.MarginFromCoords(this.X, this.Y);
         }
-        public abstract Vector[] GetMoveCells();
+        public abstract List<Point> GetMoveCells();
+
+
+
+
+        #region Operators
+        public override bool Equals(object obj)
+        {
+            if (obj is null)
+                return false;
+            ChessFigure chessFigure = obj as ChessFigure;
+            if (chessFigure == null)
+                return false;
+
+
+            return
+                chessFigure.X == this.X && chessFigure.Y == this.Y &&
+                chessFigure.FigureGroup == this.FigureGroup &&
+                chessFigure.FigureType == this.FigureType;
+        }
+        public static bool operator ==(ChessFigure chessFigure1, ChessFigure chessFigure2)
+        {
+            if (chessFigure1 is null || chessFigure2 is null)
+                return false;
+
+            return chessFigure1.Equals(chessFigure2);
+        }
+        public static bool operator !=(ChessFigure chessFigure1, ChessFigure chessFigure2)
+        {
+            if (chessFigure1 is null || chessFigure2 is null)
+                return false;
+
+            return !chessFigure1.Equals(chessFigure2);
+        }
+
+
+        #endregion
+        #region Events
+        public event MouseButtonEventHandler FigureSelected;
         public abstract void SelectionHandling(object sender, MouseButtonEventArgs mouseEventArgs);
+        #endregion
+
+        public override int GetHashCode()
+        {
+            return 0;
+        }
     }
 }

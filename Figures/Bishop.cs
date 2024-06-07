@@ -17,19 +17,80 @@ namespace ChessGame
             throw new NotImplementedException();
         }
 
-        public override Vector[] GetMoveCells()
+        public new event MouseButtonEventHandler FigureSelected;
+
+        public override List<Point> GetMoveCells()
         {
-            throw new NotImplementedException();
+            List<Point> points = new List<Point>();
+
+            //main diagonal
+            {
+                uint x, y;
+
+                x= (uint)X;
+                y= (uint)Y;
+                while(Board.ValidCell(++x,++y))
+                    points.Add(new Point(x,y));
+                x = (uint)X;
+                y = (uint)Y;
+                while (Board.ValidCell(--x, --y))
+                    points.Add(new Point(x, y));
+            }
+            //side diagonal
+            {
+                uint x, y;
+
+                x = (uint)X;
+                y = (uint)Y;
+                while (Board.ValidCell(--x, ++y))
+                    points.Add(new Point(x, y));
+                x = (uint)X;
+                y = (uint)Y;
+                while (Board.ValidCell(++x, --y))
+                    points.Add(new Point(x, y));
+            }
+
+
+
+            while (points.Count(x => !Board.ValidCell(x)) != 0)
+                points.RemoveAt(points.FindIndex(x => !Board.ValidCell(x)));
+
+            for (int i = 0; i < points.Count; ++i)
+            {
+                if
+                (
+                    points.ElementAt(i).X < 0 ||
+                    points.ElementAt(i).X > 8 ||
+                    points.ElementAt(i).Y < 0 ||
+                    points.ElementAt(i).Y > 8
+                )
+                {
+                    points.RemoveAt(i);
+                }
+            }
+            return points;
         }
+
 
         public override void Move(uint X, uint Y)
         {
-            throw new NotImplementedException();
+            this.X = X;
+            this.Y = Y;
+            this.CorrectMargin();
+        }
+
+        public override void Move(Point point)
+        {
+            Move((uint)point.X, (uint)point.Y);
         }
 
         public override void SelectionHandling(object sender, MouseButtonEventArgs mouseEventArgs)
         {
-            throw new NotImplementedException();
+            Selected = !Selected;
+
+            if (!(FigureSelected is null))
+                FigureSelected(this, mouseEventArgs);
         }
+
     }
 }

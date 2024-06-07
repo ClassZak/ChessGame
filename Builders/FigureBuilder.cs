@@ -40,7 +40,7 @@ namespace ChessGame.Builders
                     figure = new Queen(X, Y);
                     break;
                 default:
-                    throw new ArgumentException("Wron figure type");
+                    throw new ArgumentException("Wrong figure type");
             }
             figure.FigureGroup = figureGroup;
             figure.FigureType = figureType;
@@ -50,7 +50,7 @@ namespace ChessGame.Builders
             figure.Image.Width = Board.CellWidth;
             figure.Image.Height = Board.CellHeight;
             figure.Image.MouseDown += new MouseButtonEventHandler(figure.SelectionHandling);
-            figure.CurrectMargin();
+            figure.CorrectMargin();
 
             return figure;
         }

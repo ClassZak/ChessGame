@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChessGame"
         mc:Ignorable="d"
+        Icon="/chess_bishop_icon.png"
         Title="Шахматы" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
@@ -15,79 +16,15 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+
         
         <Viewbox Stretch="Uniform">
-
             <Grid>
-                <UniformGrid
+                <UniformGrid Name="CellsGrid"
                             Rows="8"
                             Columns="8"
                             Width="640"
                             Height="640">
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
-                    <Canvas Background="Black"></Canvas>
-                    <Canvas Background="White"></Canvas>
                 </UniformGrid>
                 <Border BorderBrush="Black"
                         BorderThickness="0.4"
