@@ -18,67 +18,165 @@ namespace ChessGame
         public override List<Point> GetMoveCells(List<ChessFigure> chessFigures)
         {
             List<Point> points = new List<Point>();
-            //main diagonal
+            bool stop=false;
+            //Main diagonal
             {
                 uint x, y;
 
+                stop = false;
                 x = (uint)X;
                 y = (uint)Y;
                 while (Board.ValidCell(++x, ++y))
+                {
+                    if (stop)
+                        break;
+
+                    if (!(chessFigures.Find(el => el.X == x && el.Y == y) is null))
+                    {
+                        if (chessFigures.Find(el => el.X == x && el.Y == y).FigureGroup == this.FigureGroup)
+                            break;
+                        else
+                            stop = true;
+                    }
+
                     points.Add(new Point(x, y));
+                }
+
+                stop = false;
                 x = (uint)X;
                 y = (uint)Y;
                 while (Board.ValidCell(--x, --y))
+                {
+                    if (stop)
+                        break;
+
+                    if (!(chessFigures.Find(el => el.X == x && el.Y == y) is null))
+                    {
+                        if (chessFigures.Find(el => el.X == x && el.Y == y).FigureGroup == this.FigureGroup)
+                            break;
+                        else
+                            stop = true;
+                    }
+
                     points.Add(new Point(x, y));
+                }
+
             }
-            //side diagonal
+            //Side diagonal
             {
                 uint x, y;
 
+                stop = false;
                 x = (uint)X;
                 y = (uint)Y;
                 while (Board.ValidCell(--x, ++y))
+                {
+                    if (stop)
+                        break;
+
+                    if (!(chessFigures.Find(el => el.X == x && el.Y == y) is null))
+                    {
+                        if (chessFigures.Find(el => el.X == x && el.Y == y).FigureGroup == this.FigureGroup)
+                            break;
+                        else
+                            stop = true;
+                    }
+
                     points.Add(new Point(x, y));
+                }
+
+                stop = false;
                 x = (uint)X;
                 y = (uint)Y;
                 while (Board.ValidCell(++x, --y))
+                {
+                    if (stop)
+                        break;
+
+                    if (!(chessFigures.Find(el => el.X == x && el.Y == y) is null))
+                    {
+                        if (chessFigures.Find(el => el.X == x && el.Y == y).FigureGroup == this.FigureGroup)
+                            break;
+                        else
+                            stop = true;
+                    }
+
                     points.Add(new Point(x, y));
+                }
             }
 
 
             //Rook
-            for (int i = 1; i != 9; ++i)
+            //Hor
+            stop = false;
+            for (uint i = X - 1; i != 0; --i)
             {
-                if (i == X)
-                    continue;
+                if (stop)
+                    break;
+
+                if (!(chessFigures.Find(el => el.X == i && el.Y == Y) is null))
+                {
+                    if (chessFigures.Find(el => el.X == i && el.Y == Y).FigureGroup == this.FigureGroup)
+                        break;
+                    else
+                        stop = true;
+                }
+
                 points.Add(new Point(i, Y));
             }
-            for (int i = 1; i != 9; ++i)
+
+            stop = false;
+            for (uint i = X + 1; i != 9; ++i)
             {
-                if (i == Y)
-                    continue;
+                if (stop)
+                    break;
+
+                if (!(chessFigures.Find(el => el.X == i && el.Y == Y) is null))
+                {
+                    if (chessFigures.Find(el => el.X == i && el.Y == Y).FigureGroup == this.FigureGroup)
+                        break;
+                    else
+                        stop = true;
+                }
+
+                points.Add(new Point(i, Y));
+            }
+            //Vert
+            stop = false;
+            for (uint i = Y - 1; i != 0; --i)
+            {
+                if (stop)
+                    break;
+
+                if (!(chessFigures.Find(el => el.X == X && el.Y == i) is null))
+                {
+                    if (chessFigures.Find(el => el.X == X && el.Y == i).FigureGroup == this.FigureGroup)
+                        break;
+                    else
+                        stop = true;
+                }
+
                 points.Add(new Point(X, i));
             }
 
-
-
-
-            while (points.Count(x => !Board.ValidCell(x)) != 0)
-                points.RemoveAt(points.FindIndex(x => !Board.ValidCell(x)));
-
-            for (int i = 0; i < points.Count; ++i)
+            stop = false;
+            for (uint i = Y + 1; i != 9; ++i)
             {
-                if
-                (
-                    points.ElementAt(i).X < 0 ||
-                    points.ElementAt(i).X > 8 ||
-                    points.ElementAt(i).Y < 0 ||
-                    points.ElementAt(i).Y > 8
-                )
+                if (stop)
+                    break;
+
+                if (!(chessFigures.Find(el => el.X == X && el.Y == i) is null))
                 {
-                    points.RemoveAt(i);
+                    if (chessFigures.Find(el => el.X == X && el.Y == i).FigureGroup == this.FigureGroup)
+                        break;
+                    else
+                        stop = true;
                 }
+
+                points.Add(new Point(X, i));
             }
+            points.RemoveAll(x => !Board.ValidCell(x));
+
             return points;
         }
 

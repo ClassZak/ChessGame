@@ -17,23 +17,22 @@ namespace ChessGame
 
         public override List<Point> GetMoveCells(List<ChessFigure> chessFigures)
         {
-            List<Point> points = new List<Point>();
-
-            points.Add(new Point(X - 1, Y + 2));
-            points.Add(new Point(X + 1, Y + 2));
-            points.Add(new Point(X + 2, Y + 1));
-            points.Add(new Point(X + 2, Y - 1));
-
-            points.Add(new Point(X + 1, Y - 2));
-            points.Add(new Point(X - 1, Y - 2));
-            points.Add(new Point(X - 2, Y - 1));
-            points.Add(new Point(X - 2, Y + 1));
-
-
+            List<Point> points = new List<Point>
+            {
+                new Point(X - 1, Y + 2),
+                new Point(X + 1, Y + 2),
+                new Point(X + 2, Y + 1),
+                new Point(X + 2, Y - 1),
+                new Point(X + 1, Y - 2),
+                new Point(X - 1, Y - 2),
+                new Point(X - 2, Y - 1),
+                new Point(X - 2, Y + 1)
+            };
 
 
-            while (points.Count(x => !Board.ValidCell(x)) != 0)
-                points.RemoveAt(points.FindIndex(x => !Board.ValidCell(x)));
+            points.RemoveAll(x => !Board.ValidCell(x));
+            points.RemoveAll(x =>
+            !(chessFigures.Find(y => y.X == x.X && y.Y == x.Y && y.FigureGroup==this.FigureGroup) is null));
 
             return points;
         }

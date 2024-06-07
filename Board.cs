@@ -235,6 +235,7 @@ namespace ChessGame
         }
 
 
+        #region Coordinates converters 
         public static Thickness MarginFromCoords(Vector vector)
         {
             return MarginFromCoords((uint)vector.X, (uint)vector.Y);
@@ -263,8 +264,7 @@ namespace ChessGame
         {
             return CoordsFromMargin(thickness.Left, thickness.Top);
         }
-
-
+        #endregion
         public void ResetSelection()
         {
             if (this.lastSelected == -1)
@@ -273,7 +273,7 @@ namespace ChessGame
             this.lastSelected = -1;
             movesGridCollection.Clear();
         }
-
+        #region Cells validation
         public static bool ValidCell(Point point)
         {
             return ValidCell((uint)point.X, (uint)point.Y);
@@ -282,6 +282,7 @@ namespace ChessGame
         {
             return !(X <= 0 || X > 8 || Y <= 0 || Y > 8);
         }
+        #endregion
         #region Events
         public event MouseButtonEventHandler FigureSelected;
 
@@ -337,7 +338,21 @@ namespace ChessGame
             Point point = CoordsFromMargin(((Rectangle)(sender)).Margin);
 
             ChessFigure chessFigure = this.ChessFigures.Find(x => x.Selected);
+
+
+            if(chessFigure.GetType().Name=="King")
+            {
+                if(!chessFigure.Turned)
+                {
+                    if (point.X == 3 || point.X == 7)
+                        Rooking(point.X==7,chessFigure.FigureGroup);
+                }
+
+            }
             chessFigure.Move(point);
+
+            
+                
 
             if (Turn == FigureGroup.White)
                 Turn = FigureGroup.Black;
@@ -347,6 +362,28 @@ namespace ChessGame
             ResetSelection();
 
             movesGridCollection.Clear();
+        }
+
+        private void Rooking(bool isShortDirection, FigureGroup figureGroup)
+        {
+            if(isShortDirection)
+            {
+                ChessFigures.Find
+                (
+                    x =>
+                    x.X == 8 &&
+                    x.Y == ((figureGroup == FigureGroup.White) ? 1 : 8)
+                ).Move(6, ((figureGroup == FigureGroup.White) ? 1u : 8u));
+            }
+            else
+            {
+                ChessFigures.Find
+                (
+                    x =>
+                    x.X == 1 &&
+                    x.Y == ((figureGroup == FigureGroup.White) ? 1 : 8)
+                ).Move(4, ((figureGroup == FigureGroup.White) ? 1u : 8u));
+            }
         }
         #endregion
     }
