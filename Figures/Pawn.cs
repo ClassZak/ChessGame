@@ -13,37 +13,57 @@ namespace ChessGame
     {
         public Pawn():base() { }
         public Pawn(uint X,uint Y):base(X,Y) { }
-        public override bool CheckMove(uint X, uint Y, List<ChessFigure> chessFigures)
-        {
-            throw new NotImplementedException();
-        }
 
 
         public new event MouseButtonEventHandler FigureSelected;
 
 
-        public override List<Point> GetMoveCells()
+        public override List<Point> GetMoveCells(List<ChessFigure> chessFigures)
         {
-            List<Point> points;
+            List<Point> points= new List<Point>();
 
             if(FigureGroup== FigureGroup.White)
             {
-
-                points = new List<Point>()
-                { new Point(X,Y+1) };
-                if (Y==2)
+                points.Add(new Point(X,Y+1));
+                if (Y==2 && chessFigures.Find(y => y.X == X && y.Y == Y+1) is null)
                     points.Add(new Point(X, Y + 2));
             }
             else
             {
-                points = new List<Point>()
-                { new Point(X,Y-1) };
-                if (Y == 7)
+                points.Add(new Point(X,Y-1));
+                if (Y == 7 && chessFigures.Find(y => y.X == X && y.Y == Y - 1) is null)
                     points.Add(new Point(X, Y - 2));
             }
+            points.RemoveAll(x => !Board.ValidCell(x));
+            points.RemoveAll(x=>!(chessFigures.Find(y=>y.X==x.X&&y.Y==x.Y) is null));
 
-            while (points.Count(x => !Board.ValidCell(x)) != 0)
-                points.RemoveAt(points.FindIndex(x => !Board.ValidCell(x)));
+
+            if
+            (
+                !(
+                    chessFigures.Find
+                    (
+                        x=>x.X==X-1 &&
+                        x.Y==(this.FigureGroup == FigureGroup.White ? Y+1 : Y-1) &&
+                        x.FigureGroup!=this.FigureGroup
+                    ) is null
+                )
+            )
+                points.Add(new Point(X - 1, (this.FigureGroup == FigureGroup.White ? Y + 1 : Y - 1)));
+            if
+            (
+                !(
+                    chessFigures.Find
+                    (
+                        x=>x.X==X+1 &&
+                        x.Y==(this.FigureGroup == FigureGroup.White ? Y+1 : Y-1) &&
+                        x.FigureGroup!=this.FigureGroup
+                    ) is null
+                )
+            )
+                points.Add(new Point(X + 1, (this.FigureGroup == FigureGroup.White ? Y + 1 : Y - 1)));
+
+
 
 
             return points;
@@ -54,6 +74,7 @@ namespace ChessGame
             this.X = X;
             this.Y = Y;
             this.CorrectMargin();
+            Turned = true;
         }
 
         public override void Move(Point point)

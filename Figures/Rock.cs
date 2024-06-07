@@ -12,14 +12,10 @@ namespace ChessGame
     {
         public Rock() : base() { }
         public Rock(uint X, uint Y) : base(X, Y) { }
-        public override bool CheckMove(uint X, uint Y, List<ChessFigure> chessFigures)
-        {
-            throw new NotImplementedException();
-        }
 
         public new event MouseButtonEventHandler FigureSelected;
 
-        public override List<Point> GetMoveCells()
+        public override List<Point> GetMoveCells(List<ChessFigure> chessFigures)
         {
             List<Point> points = new List<Point>();
 
@@ -72,6 +68,7 @@ namespace ChessGame
             this.X = X;
             this.Y = Y;
             this.CorrectMargin();
+            Turned = true;
         }
 
         public override void Move(Point point)

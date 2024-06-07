@@ -320,7 +320,7 @@ namespace ChessGame
 
             //Steps
             movesGridCollection.Clear();
-            List<Point> vectors=chessFigure.GetMoveCells();
+            List<Point> vectors=chessFigure.GetMoveCells(this.ChessFigures);
             for(int i=0; i<vectors.Count;++i)
             {
                 Rectangle rectangle = new Rectangle();

@@ -12,15 +12,18 @@ namespace ChessGame
 {
     internal abstract class ChessFigure
     {
-        public ChessFigure() { }
-        public ChessFigure(uint X, uint Y)
+        public ChessFigure()
+        {
+            Turned = false;
+        }
+        public ChessFigure(uint X, uint Y) : base()
         {
             this.X = X;
             this.Y = Y;
         }
 
 
-
+        public bool Turned { get; protected set; }
         public bool Selected { get; set; }
         public Image Image { get; set; }
         public FigureType FigureType { get; set; }
@@ -31,12 +34,11 @@ namespace ChessGame
 
         public abstract void Move(uint X, uint Y);
         public abstract void Move(Point point);
-        public abstract bool CheckMove(uint X, uint Y, List<ChessFigure> chessFigures);
         public void CorrectMargin()
         {
             this.Image.Margin = Board.MarginFromCoords(this.X, this.Y);
         }
-        public abstract List<Point> GetMoveCells();
+        public abstract List<Point> GetMoveCells(List<ChessFigure> chessFigures);
 
 
 
