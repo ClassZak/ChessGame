@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 
 namespace ChessGame
@@ -17,13 +18,15 @@ namespace ChessGame
             this.X = X;
             this.Y = Y;
         }
+        public event MouseButtonEventHandler FigureSelected;
 
 
+        public bool Selected {  get; set; }
         public Image Image { get; set; }
         public FigureType FigureType { get; set; }
         public FigureGroup FigureGroup { get; set; }
-        uint X { get; set; }
-        uint Y { get; set; }
+        public uint X { get; set; }
+        public uint Y { get; set; }
 
 
         public abstract void Move(uint X, uint Y);
@@ -32,5 +35,7 @@ namespace ChessGame
         {
             this.Image.Margin=Board.MarginFromCoords(this.X,this.Y);
         }
+        public abstract Vector[] GetMoveCells();
+        public abstract void SelectionHandling(object sender, MouseButtonEventArgs mouseEventArgs);
     }
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 
 namespace ChessGame
 {
@@ -15,7 +17,15 @@ namespace ChessGame
             throw new NotImplementedException();
         }
 
+        public override Vector[] GetMoveCells()
+        {
+            throw new NotImplementedException();
+        }
         public override void Move(uint X, uint Y)
+        {
+            throw new NotImplementedException();
+        }
+        public override void SelectionHandling(object sender, MouseButtonEventArgs mouseEventArgs)
         {
             throw new NotImplementedException();
         }

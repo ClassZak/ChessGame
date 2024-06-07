@@ -6,15 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 
 namespace ChessGame
 {
     internal class Board
     {
         private List<ChessFigure> ChessFigures = new List<ChessFigure>();
-        System.Windows.Controls.Grid Grid { get; set; }
 
         private FigureGroup Turn = FigureGroup.White;
+        private int lastSelected = -1; 
 
         public GameType _gameType=GameType.Default;
 
@@ -23,6 +24,8 @@ namespace ChessGame
         public const float CellHeight = 80;
         public const float BoardWidth = 640;
         public const float BoardHeight = 640;
+
+
         public Board(System.Windows.Controls.Grid Grid)
         {
             if(_gameType == GameType.Default)
@@ -185,19 +188,20 @@ namespace ChessGame
             foreach(var el in ChessFigures)
                 Grid.Children.Add(el.Image);
 
-
-
+            for(int i=0;i<ChessFigures.Count;i++)
+            {
+                ChessFigures.ElementAt(i).FigureSelected += new MouseButtonEventHandler(this.FigureSelectedHandle);
+            }
         }
 
 
-        private float ConvertX(uint X)
+        public void UpdateChessImages(System.Windows.Controls.Grid Grid)
         {
-            return ConvertX(X);
+            Grid.Children.Clear();
+            foreach (var el in ChessFigures)
+                Grid.Children.Add(el.Image);
         }
-        private float ConvertY(uint Y)
-        {
-            return ConvertY(Y);
-        }
+
 
         public static Thickness MarginFromCoords(uint X, uint Y)
         {
@@ -209,5 +213,15 @@ namespace ChessGame
                 ChessGame.Board.CellHeight * (Y-1)
             );
         }
+
+
+        #region Events
+        public event MouseButtonEventHandler FigureSelected;
+
+        public void FigureSelectedHandle(object sender,MouseButtonEventArgs mouseButtonEventArgs)
+        {
+
+        }
+        #endregion
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace ChessGame.Builders
 {
@@ -48,6 +49,7 @@ namespace ChessGame.Builders
             figure.Image.Stretch = System.Windows.Media.Stretch.UniformToFill;
             figure.Image.Width = Board.CellWidth;
             figure.Image.Height = Board.CellHeight;
+            figure.Image.MouseDown += new MouseButtonEventHandler(figure.SelectionHandling);
             figure.CurrectMargin();
 
             return figure;
