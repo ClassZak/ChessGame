@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChessGame
 {
-    internal enum FigureType
+    public enum FigureType
     {
         Pawn,
         Knight,

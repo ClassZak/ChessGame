@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace ChessGame
 {
-    internal abstract class ChessFigure
+    public abstract class ChessFigure
     {
         public ChessFigure()
         {
