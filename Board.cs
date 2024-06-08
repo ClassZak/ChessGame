@@ -18,11 +18,12 @@ namespace ChessGame
     {
         private List<ChessFigure> ChessFigures = new List<ChessFigure>();
 
-        public static FigureGroup Turn { get; private set; }
+        public FigureGroup Turn { get; private set; }
         private int lastSelected = -1; 
 
         public GameType _gameType=GameType.Default;
         public List<object> movesGridCollection=new List<object>();
+        public bool NeedRotate {  get; private set; }
 
 
         public const float CellWidth = 80;
@@ -33,7 +34,9 @@ namespace ChessGame
 
         public Board(System.Windows.Controls.Grid Grid)
         {
+            NeedRotate = false;
             Turn = FigureGroup.White;
+
             ResetGame(Grid);
         }
         public void ResetGame(System.Windows.Controls.Grid Grid)
@@ -228,15 +231,38 @@ namespace ChessGame
             }
         }
 
+
+        public event EventHandler BoardRotated;
         public void UpdateChessImages(System.Windows.Controls.Grid Grid)
         {
+            if(NeedRotate)
+            {
+                ScaleTransform scaleTransform = new ScaleTransform(1, (Turn==FigureGroup.Black) ? -1 : 1);
+                Grid.LayoutTransform = scaleTransform;
+            }
+
             Grid.Children.Clear();
             foreach (var el in ChessFigures)
+            {
+                if(NeedRotate)
+                {
+                    ScaleTransform scaleTransform = new ScaleTransform(1, (Turn == FigureGroup.Black) ? -1 : 1);
+                    el.Image.LayoutTransform= scaleTransform;
+                }
+                
                 Grid.Children.Add(el.Image);
+            }
+            NeedRotate = false;
+            if(!(BoardRotated is null))
+                BoardRotated(this,null);
+
+
+
+
 
             if (lastSelected != -1)
             {
-                Rectangle rectangle = new Rectangle();
+                Rectangle rectangle=new Rectangle();
                 //Selection rect
                 rectangle.Stroke = new SolidColorBrush(Colors.MediumOrchid);
                 rectangle.StrokeThickness = 8;
@@ -244,6 +270,7 @@ namespace ChessGame
                     MarginFromCoords(ChessFigures.ElementAt(lastSelected).X, ChessFigures.ElementAt(lastSelected).Y);
                 Grid.Children.Add(rectangle);
             }
+
             if (movesGridCollection.Count != 0)
                 for (int i = 0; i < movesGridCollection.Count; ++i)
                     Grid.Children.Add((UIElement)movesGridCollection[i]);
@@ -264,27 +291,16 @@ namespace ChessGame
             return new Thickness
             (
                 ChessGame.Board.CellWidth * (X - 1),
-                ChessGame.Board.CellHeight * (Turn==FigureGroup.White ? (8 - Y) : Y-1),
+                ChessGame.Board.CellHeight * (8 - Y),
                 ChessGame.Board.CellWidth * (8 - X),
-                ChessGame.Board.CellHeight * (Turn == FigureGroup.White ? (Y - 1) : 8-Y)
+                ChessGame.Board.CellHeight * (Y-1)
             );
         }
 
 
         public static Point CoordsFromMargin(double left,double top)
         {
-            Point point=
-            new Point
-            (
-                left / CellWidth + 1,
-                (
-                    Turn == FigureGroup.White ?
-                    8 - top / CellHeight :
-                    top / CellHeight + 1
-                )
-            );
-
-            return point;
+            return new Point(left / CellWidth+1, 8-top / CellHeight);
         }
         public static Point CoordsFromMargin(Thickness thickness)
         {
@@ -412,22 +428,12 @@ namespace ChessGame
                 Turn = FigureGroup.Black;
             else
                 Turn = FigureGroup.White;
+            NeedRotate=true;
+
             ResetSelection();
-            RotateBoard();
 
             movesGridCollection.Clear();
             PlayGameSound(soundKind);
-        }
-
-        private void RotateBoard()
-        {
-            Thickness oldMargin;
-
-            for(int i=0;i<ChessFigures.Count;++i)
-            {
-                oldMargin = ChessFigures[i].Image.Margin;
-                ChessFigures[i].Image.Margin=new Thickness(oldMargin.Left,oldMargin.Bottom,oldMargin.Right,oldMargin.Top);
-            }
         }
 
         private void Rooking(bool isShortDirection, FigureGroup figureGroup)

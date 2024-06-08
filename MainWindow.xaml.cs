@@ -34,6 +34,7 @@ namespace ChessGame
         public void RunGame()
         {
             _board= new Board(this.Board);
+            _board.BoardRotated += new EventHandler(RotateBoard);
         }
 
 
@@ -90,6 +91,12 @@ namespace ChessGame
         private void NewGameClick(object sender, RoutedEventArgs e)
         {
             _board.ResetGame(Board);
+        }
+
+        private void RotateBoard(object sender, EventArgs e)
+        {
+            ScaleTransform scaleTransform = new ScaleTransform(1, (((Board)(sender)).Turn == FigureGroup.Black) ? -1 : 1);
+            CellsGrid.LayoutTransform= scaleTransform;
         }
     }
 }
