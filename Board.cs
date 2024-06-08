@@ -229,24 +229,68 @@ namespace ChessGame
 
         public void UpdateChessImages(System.Windows.Controls.Grid Grid)
         {
-            Grid.Children.Clear();
-            foreach (var el in ChessFigures)
-                Grid.Children.Add(el.Image);
-
-            if(lastSelected!=-1)
+            if(Turn==FigureGroup.White)
             {
-                Rectangle rectangle=new Rectangle();
-                //Selection rect
-                rectangle.Stroke = new SolidColorBrush(Colors.MediumOrchid);
-                rectangle.StrokeThickness = 8;
-                rectangle.Margin =
-                    MarginFromCoords(ChessFigures.ElementAt(lastSelected).X, ChessFigures.ElementAt(lastSelected).Y);
-                Grid.Children.Add(rectangle);
-            }
+                Grid.Children.Clear();
+                foreach (var el in ChessFigures)
+                    Grid.Children.Add(el.Image);
 
-            if (movesGridCollection.Count != 0)
-                for(int i=0;i< movesGridCollection.Count;++i)
-                    Grid.Children.Add((UIElement)movesGridCollection[i]);
+                if(lastSelected!=-1)
+                {
+                    Rectangle rectangle=new Rectangle();
+                    //Selection rect
+                    rectangle.Stroke = new SolidColorBrush(Colors.MediumOrchid);
+                    rectangle.StrokeThickness = 8;
+                    rectangle.Margin =
+                        MarginFromCoords(ChessFigures.ElementAt(lastSelected).X, ChessFigures.ElementAt(lastSelected).Y);
+                    Grid.Children.Add(rectangle);
+                }
+
+                if (movesGridCollection.Count != 0)
+                    for(int i=0;i< movesGridCollection.Count;++i)
+                        Grid.Children.Add((UIElement)movesGridCollection[i]);
+            }
+            else
+            {
+                Thickness oldMargin;
+                for(int i=0;i< ChessFigures.Count;++i)
+                {
+                    oldMargin = ChessFigures.ElementAt(i).Image.Margin;
+                    ChessFigures.ElementAt(i).Image.Margin=new Thickness(oldMargin.Left,oldMargin.Bottom,oldMargin.Right,oldMargin.Top);
+                }
+
+                if (lastSelected != -1)
+                {
+                    Rectangle rectangle = new Rectangle();
+                    //Selection rect
+                    rectangle.Stroke = new SolidColorBrush(Colors.MediumOrchid);
+                    rectangle.StrokeThickness = 8;
+                    rectangle.Margin =
+                        MarginFromCoords(ChessFigures.ElementAt(lastSelected).X, ChessFigures.ElementAt(lastSelected).Y);
+
+                    oldMargin = rectangle.Margin;
+                    rectangle.Margin=new Thickness(oldMargin.Left,oldMargin.Bottom,oldMargin.Right,oldMargin.Top);
+
+                    Grid.Children.Add(rectangle);
+                }
+
+                if (movesGridCollection.Count != 0)
+                    for (int i = 0; i < movesGridCollection.Count; ++i)
+                    {
+                        UIElement uIElement = (UIElement)movesGridCollection[i];
+                        Rectangle rectangle = uIElement as Rectangle;
+
+
+                        if(rectangle is null)
+                            Grid.Children.Add(uIElement);
+                        else
+                        {
+                            oldMargin = rectangle.Margin;
+                            rectangle.Margin = new Thickness(oldMargin.Left, oldMargin.Bottom, oldMargin.Right, oldMargin.Top);
+                            Grid.Children.Add(uIElement);
+                        }
+                    }
+            }
         }
 
 
