@@ -6,139 +6,73 @@
         xmlns:local="clr-namespace:ChessGame"
         mc:Ignorable="d"
         Icon="/chess_bishop_icon.png"
+        MinHeight="450"
+        MinWidth="800"
         Title="Шахматы" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
-           
+
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="7*" />
         </Grid.ColumnDefinitions>
 
 
-        
-        <Viewbox Stretch="Uniform">
+
+        <Menu Grid.Row="0" Grid.ColumnSpan="3">
+            <MenuItem Header="Игра">
+                <MenuItem Header="Новая игра" />
+                <MenuItem Header="Завершить партию" />
+                <Separator />
+                <MenuItem Header="Выход" />
+            </MenuItem>
+        </Menu>
+
+
+        <Grid>
+
+        </Grid>
+
+
+        <Viewbox Stretch="Uniform" Grid.Column="1">
             <Grid>
-                <UniformGrid Name="CellsGrid"
-                            Rows="8"
-                            Columns="8"
-                            Width="640"
-                            Height="640">
-                </UniformGrid>
-                <Border BorderBrush="Black"
-                        BorderThickness="0.4"
-                        />
-                <Grid Name="Board"/>
-            </Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="640"/>
+                    <ColumnDefinition Width="160"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Width="160" Background="White">
+                    <StackPanel>
+                        <TextBlock Text="Съеденные фигуры (Белые)" FontWeight="Bold" TextWrapping="Wrap"/>
+                        <UniformGrid Name="CapturedWhiteGrid" Rows="8" Columns="2" Width="120"/>
+                    </StackPanel>
+                </Grid>
+
+                <Grid  Grid.Column="1">
+                    <UniformGrid Name="CellsGrid"
+                                Rows="8"
+                                Columns="8"
+                                Width="640"
+                                Height="640">
+                    </UniformGrid>
+                    <Border BorderBrush="Black"
+                            BorderThickness="0.4"
+                            />
+                    <Grid Name="Board" />
+                </Grid>
+
+                <Grid Width="160" Grid.Column="2" Background="White">
+                    <StackPanel>
+                        <TextBlock Text="Съеденные фигуры (Чёрные)" FontWeight="Bold" TextWrapping="Wrap"/>
+                        <UniformGrid Name="CapturedBlackGrid" Rows="8" Columns="2" Width="120"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
         </Viewbox>
-        
+
     </Grid>
 </Window>
-
-
-
-
-
-
-
-
-
-        <!--Grid Name="Board">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="8*" />
-                <ColumnDefinition Width="8*" />
-                <ColumnDefinition Width="8*" />
-                <ColumnDefinition Width="8*" />
-                <ColumnDefinition Width="8*" />
-                <ColumnDefinition Width="8*" />
-                <ColumnDefinition Width="8*" />
-                <ColumnDefinition Width="8*" />
-            </Grid.ColumnDefinitions>
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="8*" />
-                <RowDefinition Height="8*" />
-                <RowDefinition Height="8*" />
-                <RowDefinition Height="8*" />
-                <RowDefinition Height="8*" />
-                <RowDefinition Height="8*" />
-                <RowDefinition Height="8*" />
-                <RowDefinition Height="8*" />
-            </Grid.RowDefinitions>
-            <Canvas Background="White"
-                    Grid.Column="0"
-                    Grid.Row="0"></Canvas>
-            <Canvas Background="Black"
-                    Grid.Column="1"
-                    Grid.Row="0"></Canvas>
-            <Canvas Background="White"
-                    Grid.Column="2"
-                    Grid.Row="0"></Canvas>
-            <Canvas Background="Black"
-                    Grid.Column="3"
-                    Grid.Row="0"></Canvas>
-            <Canvas Background="White"
-                    Grid.Column="4"
-                    Grid.Row="0"></Canvas>
-            <Canvas Background="Black"
-                    Grid.Column="5"
-                    Grid.Row="0"></Canvas>
-            <Canvas Background="White"
-                    Grid.Column="6"
-                    Grid.Row="0"></Canvas>
-            <Canvas Background="Black"
-                    Grid.Column="7"
-                    Grid.Row="0"></Canvas>
-            <Canvas Background="Black"
-                    Grid.Column="0"
-                    Grid.Row="1"></Canvas>
-            <Canvas Background="White"
-                    Grid.Column="1"
-                    Grid.Row="1"></Canvas>
-            <Canvas Background="Black"
-                    Grid.Column="2"
-                    Grid.Row="1"></Canvas>
-            <Canvas Background="White"
-                    Grid.Column="3"
-                    Grid.Row="1"></Canvas>
-            <Canvas Background="Black"
-                    Grid.Column="4"
-                    Grid.Row="1"></Canvas>
-            <Canvas Background="White"
-                    Grid.Column="5"
-                    Grid.Row="1"></Canvas>
-            <Canvas Background="Black"
-                    Grid.Column="6"
-                    Grid.Row="1"></Canvas>
-            <Canvas Background="White"
-                    Grid.Column="7"
-                    Grid.Row="1"></Canvas>
-            <Canvas Background="White"
-                    Grid.Column="0"
-                    Grid.Row="2"></Canvas>
-            <Canvas Background="Black"
-                    Grid.Column="0"
-                    Grid.Row="2"></Canvas>
-            <Canvas Background="White"
-                    Grid.Column="0"
-                    Grid.Row="2"></Canvas>
-            <Canvas Background="Black"
-                    Grid.Column="0"
-                    Grid.Row="2"></Canvas>
-            <Canvas Background="White"
-                    Grid.Column="0"
-                    Grid.Row="2"></Canvas>
-            <Canvas Background="Black"
-                    Grid.Column="0"
-                    Grid.Row="2"></Canvas>
-            <Canvas Background="White"
-                    Grid.Column="0"
-                    Grid.Row="2"></Canvas>
-            <Canvas Background="Black"
-                    Grid.Column="0"
-                    Grid.Row="2"></Canvas>
-            <Canvas Background="Black"
-                    Grid.Column="0"
-                    Grid.Row="2"></Canvas>
-        </Grid-->
