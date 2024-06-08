@@ -349,6 +349,15 @@ namespace ChessGame
                 }
 
             }
+
+
+            try
+            {
+                this.ChessFigures.RemoveAll(x => x.X == point.X && x.Y == point.Y);
+            }
+            catch
+            {
+            }
             chessFigure.Move(point);
 
             
