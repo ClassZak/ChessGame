@@ -23,7 +23,7 @@
 
         <Menu Grid.Row="0" Grid.ColumnSpan="3">
             <MenuItem Header="Игра">
-                <MenuItem Header="Новая игра" />
+                <MenuItem Header="Новая игра" Click="NewGameClick"/>
                 <MenuItem Header="Завершить партию" />
                 <Separator />
                 <MenuItem Header="Выход" />

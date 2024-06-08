@@ -71,10 +71,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Builders\FigureBuilder.cs" />
-    <Compile Include="GameType.cs" />
+    <Compile Include="Enums\GameType.cs" />
     <Compile Include="Figures\King.cs" />
     <Compile Include="Figures\Queen.cs" />
     <Compile Include="Figures\Rock.cs" />
+    <Compile Include="SoundKind.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -86,8 +87,8 @@
     <Compile Include="Figures\Bishop.cs" />
     <Compile Include="Board.cs" />
     <Compile Include="ChessFigure.cs" />
-    <Compile Include="FigureGroup.cs" />
-    <Compile Include="FigureType.cs" />
+    <Compile Include="Enums\FigureGroup.cs" />
+    <Compile Include="Enums\FigureType.cs" />
     <Compile Include="Figures\Knight.cs" />
     <Compile Include="Builders\ImageBuilder.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -150,6 +151,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="chess_bishop_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Sounds\Caption.mp3" />
+    <Content Include="Sounds\Move.mp3" />
+    <Content Include="Sounds\Rooking.mp3" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

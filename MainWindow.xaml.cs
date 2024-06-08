@@ -22,6 +22,7 @@ namespace ChessGame
     public partial class MainWindow : Window
     {
         private Board _board;
+        public static MediaPlayer MediaPlayer;
         public MainWindow()
         {
             InitializeComponent();
@@ -84,6 +85,11 @@ namespace ChessGame
 
                 CellsGrid.Children.Add(rectangle);
             }
+        }
+
+        private void NewGameClick(object sender, RoutedEventArgs e)
+        {
+            _board.ResetGame(Board);
         }
     }
 }

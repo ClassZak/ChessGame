@@ -53,7 +53,12 @@ namespace ChessGame
                     continue;
                 }
 
-                if (chessFigures.ElementAt(i).GetAttackedMoveCells(chessFigures).Contains(point))
+                List<ChessFigure> currectCheckList = new List<ChessFigure>(chessFigures);
+                // Удаляем нужный элемент из второго списка
+                ChessFigure elementToRemove = this;
+                currectCheckList.Remove(elementToRemove);
+
+                if (chessFigures.ElementAt(i).GetAttackedMoveCells(currectCheckList).Contains(point))
                 {
                     res = true;
                     break;

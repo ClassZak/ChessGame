@@ -1,6 +1,7 @@
 ﻿using ChessGame.Builders;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +33,22 @@ namespace ChessGame
 
         public Board(System.Windows.Controls.Grid Grid)
         {
-            if(_gameType == GameType.Default)
+            ResetGame(Grid);
+        }
+        public void ResetGame(System.Windows.Controls.Grid Grid)
+        {
+            FigureSelected=null;
+            ChessFigures = new List<ChessFigure>();
+
+            Turn = FigureGroup.White;
+            lastSelected = -1;
+
+            _gameType = GameType.Default;
+            movesGridCollection = new List<object>();
+
+
+
+            if (_gameType == GameType.Default)
             {
                 for (uint i = 1; i != 9; ++i)
                     ChessFigures.Add(FigureBuilder.CreateFigure
@@ -42,10 +58,10 @@ namespace ChessGame
                             FigureGroup.White,
                             "FigureImages/wP.png"
                         ));
-                for (uint i=1;i!=9;++i)
+                for (uint i = 1; i != 9; ++i)
                     ChessFigures.Add(FigureBuilder.CreateFigure
                         (
-                            i,7u,
+                            i, 7u,
                             FigureType.Pawn,
                             FigureGroup.Black,
                             "FigureImages/bP.png"
@@ -55,30 +71,30 @@ namespace ChessGame
 
                 ChessFigures.Add(FigureBuilder.CreateFigure
                     (
-                        1u,1u,
+                        1u, 1u,
                         FigureType.Rock,
                         FigureGroup.White,
                         "FigureImages/wR.png"
                     ));
                 ChessFigures.Add(FigureBuilder.CreateFigure
                     (
-                        8u,1u,
+                        8u, 1u,
                         FigureType.Rock,
                         FigureGroup.White,
                         "FigureImages/wR.png"
                     ));
-                
+
 
                 ChessFigures.Add(FigureBuilder.CreateFigure
                     (
-                        1u,8u,
+                        1u, 8u,
                         FigureType.Rock,
                         FigureGroup.Black,
                         "FigureImages/bR.png"
                     ));
                 ChessFigures.Add(FigureBuilder.CreateFigure
                     (
-                        8u,8u,
+                        8u, 8u,
                         FigureType.Rock,
                         FigureGroup.Black,
                         "FigureImages/bR.png"
@@ -189,28 +205,27 @@ namespace ChessGame
             }
 
             Grid.Children.Clear();
-            foreach(var el in ChessFigures)
+            foreach (var el in ChessFigures)
                 Grid.Children.Add(el.Image);
 
-            for(int i=0;i<ChessFigures.Count;i++)
+            for (int i = 0; i < ChessFigures.Count; i++)
             {
-                Type t=ChessFigures.ElementAt(i).GetType();
+                Type t = ChessFigures.ElementAt(i).GetType();
 
-                if(t.Name=="Bishop")
+                if (t.Name == "Bishop")
                     ((Bishop)(ChessFigures.ElementAt(i))).FigureSelected += new MouseButtonEventHandler(this.FigureSelectedHandler);
-                if(t.Name=="King")
+                if (t.Name == "King")
                     ((King)(ChessFigures.ElementAt(i))).FigureSelected += new MouseButtonEventHandler(this.FigureSelectedHandler);
-                if(t.Name=="Knight")
+                if (t.Name == "Knight")
                     ((Knight)(ChessFigures.ElementAt(i))).FigureSelected += new MouseButtonEventHandler(this.FigureSelectedHandler);
-                if(t.Name=="Pawn")
+                if (t.Name == "Pawn")
                     ((Pawn)(ChessFigures.ElementAt(i))).FigureSelected += new MouseButtonEventHandler(this.FigureSelectedHandler);
-                if(t.Name=="Queen")
+                if (t.Name == "Queen")
                     ((Queen)(ChessFigures.ElementAt(i))).FigureSelected += new MouseButtonEventHandler(this.FigureSelectedHandler);
-                if(t.Name=="Rock")
+                if (t.Name == "Rock")
                     ((Rock)(ChessFigures.ElementAt(i))).FigureSelected += new MouseButtonEventHandler(this.FigureSelectedHandler);
             }
         }
-
 
         public void UpdateChessImages(System.Windows.Controls.Grid Grid)
         {
@@ -336,6 +351,7 @@ namespace ChessGame
         public void MoveChosen(object sender, MouseButtonEventArgs mouseEventArgs)
         {
             Point point = CoordsFromMargin(((Rectangle)(sender)).Margin);
+            SoundKind soundKind=SoundKind.None;
 
             ChessFigure chessFigure = this.ChessFigures.Find(x => x.Selected);
 
@@ -345,18 +361,36 @@ namespace ChessGame
                 if(!chessFigure.Turned)
                 {
                     if (point.X == 3 || point.X == 7)
+                    {
                         Rooking(point.X==7,chessFigure.FigureGroup);
+                        if(soundKind==SoundKind.None)
+                            soundKind = SoundKind.Rooking;
+                    }
                 }
-
             }
 
 
             try
             {
+                int del=
                 this.ChessFigures.RemoveAll(x => x.X == point.X && x.Y == point.Y);
+
+                if (del != 0)
+                {
+                    if (soundKind == SoundKind.None)
+                        soundKind = SoundKind.Caption;
+                }
+                else
+                {
+                    if (soundKind == SoundKind.None)
+                        soundKind = SoundKind.Move;
+                }
+                    
             }
             catch
             {
+                if (soundKind == SoundKind.None)
+                    soundKind = SoundKind.Move;
             }
             chessFigure.Move(point);
 
@@ -371,6 +405,7 @@ namespace ChessGame
             ResetSelection();
 
             movesGridCollection.Clear();
+            PlayGameSound(soundKind);
         }
 
         private void Rooking(bool isShortDirection, FigureGroup figureGroup)
@@ -393,6 +428,29 @@ namespace ChessGame
                     x.Y == ((figureGroup == FigureGroup.White) ? 1 : 8)
                 ).Move(4, ((figureGroup == FigureGroup.White) ? 1u : 8u));
             }
+        }
+        #endregion
+
+        #region Sounds
+        public void PlayGameSound(SoundKind soundKind)
+        {
+            MainWindow.MediaPlayer = new MediaPlayer();
+            switch (soundKind)
+            {
+                case SoundKind.Move:
+                    MainWindow.MediaPlayer.Open(new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(),"Sounds/Move.mp3")));
+                    break;
+                case SoundKind.Check:
+                    MainWindow.MediaPlayer.Open(new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Sounds/Move.mp3")));
+                    break;
+                case SoundKind.Caption:
+                    MainWindow.MediaPlayer.Open(new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Sounds/Caption.mp3")));
+                    break;
+                case SoundKind.Rooking:
+                    MainWindow.MediaPlayer.Open(new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Sounds/Rooking.mp3")));
+                    break;
+            }
+            MainWindow.MediaPlayer.Play();
         }
         #endregion
     }

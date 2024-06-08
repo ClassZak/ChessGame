@@ -204,6 +204,7 @@ namespace ChessGame
 
         public override List<Point> GetAttackedMoveCells(List<ChessFigure> chessFigures)
         {
+            return GetMoveCells(chessFigures);
             List<Point> points = new List<Point>();
 
             bool stop = false;
