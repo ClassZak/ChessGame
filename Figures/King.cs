@@ -16,6 +16,51 @@ namespace ChessGame
         public new event MouseButtonEventHandler FigureSelected;
 
 
+        public List<Point> GetDefaultMoveCells()
+        {
+            List<Point> points = new List<Point>
+            {
+                new Point(X - 1, Y - 1),
+                new Point(X - 1, Y),
+                new Point(X - 1, Y + 1),
+                new Point(X, Y + 1),
+                new Point(X, Y - 1),
+                new Point(X + 1, Y - 1),
+                new Point(X + 1, Y),
+                new Point(X + 1, Y + 1)
+            };
+            points.RemoveAll(x => !Board.ValidCell(x));
+
+            return points;
+        }
+
+
+        public bool PositionChecked(List<ChessFigure> chessFigures, Point point)
+        {
+            bool res = false;
+            for (int i = 0; i < chessFigures.Count; ++i)
+            {
+                if (chessFigures.ElementAt(i).FigureGroup == this.FigureGroup)
+                    continue;
+
+                if(chessFigures.ElementAt(i).GetType().Name=="King")
+                {
+                    if(((King)(chessFigures.ElementAt(i))).GetDefaultMoveCells().Contains(point))
+                    {
+                        res= true;
+                        break;
+                    }
+                    continue;
+                }
+
+                if (chessFigures.ElementAt(i).GetMoveCells(chessFigures).Contains(point))
+                {
+                    res = true;
+                    break;
+                }
+            }
+            return res;
+        }
         public override List<Point> GetMoveCells(List<ChessFigure> chessFigures)
         {
             List<Point> points= new List<Point>
@@ -35,79 +80,80 @@ namespace ChessGame
 
             if(!Turned)
             {
-                if(FigureGroup==FigureGroup.White)
-                {
-                    if (!(chessFigures.Find(x => x.X == 1 && x.Y == 1) is null))
-                        if(!(chessFigures.Find(x => x.X == 1 && x.Y == 1 && x.GetType().Name=="Rock" && x.FigureGroup==this.FigureGroup && !x.Turned) is null))
-                        {
-                            bool canRooking = true;
-                            for(uint i = X-1; i!=1;--i)
+                if(!PositionChecked(chessFigures,new Point(X,Y)))
+                    if(FigureGroup==FigureGroup.White)
+                    {
+                        if (!(chessFigures.Find(x => x.X == 1 && x.Y == 1) is null))
+                            if(!(chessFigures.Find(x => x.X == 1 && x.Y == 1 && x.GetType().Name=="Rock" && x.FigureGroup==this.FigureGroup && !x.Turned) is null))
                             {
-                                if(!(chessFigures.Find(x=>x.X==i && x.Y==Y) is null))
+                                bool canRooking = true;
+                                for(uint i = X-1; i!=1;--i)
                                 {
-                                    canRooking = false;
-                                    break;
+                                    if(!(chessFigures.Find(x=>x.X==i && x.Y==Y) is null) || PositionChecked(chessFigures,new Point(i,Y)))
+                                    {
+                                        canRooking = false;
+                                        break;
+                                    }
                                 }
-                            }
 
-                            if(canRooking)
-                                points.Add(new Point(X-2,Y));
-                        }
-                    if (!(chessFigures.Find(x => x.X == 8 && x.Y == 1) is null))
-                        if (!(chessFigures.Find(x => x.X == 8 && x.Y == 1 && x.GetType().Name == "Rock" && x.FigureGroup == this.FigureGroup && !x.Turned) is null))
-                        {
-                            bool canRooking = true;
-                            for (uint i = X + 1; i != 8; ++i)
+                                if(canRooking)
+                                    points.Add(new Point(X-2,Y));
+                            }
+                        if (!(chessFigures.Find(x => x.X == 8 && x.Y == 1) is null))
+                            if (!(chessFigures.Find(x => x.X == 8 && x.Y == 1 && x.GetType().Name == "Rock" && x.FigureGroup == this.FigureGroup && !x.Turned) is null))
                             {
-                                if (!(chessFigures.Find(x => x.X == i && x.Y == Y) is null))
+                                bool canRooking = true;
+                                for (uint i = X + 1; i != 8; ++i)
                                 {
-                                    canRooking = false;
-                                    break;
+                                    if (!(chessFigures.Find(x => x.X == i && x.Y == Y) is null) || PositionChecked(chessFigures, new Point(i, Y)))
+                                    {
+                                        canRooking = false;
+                                        break;
+                                    }
                                 }
-                            }
 
-                            if (canRooking)
-                                points.Add(new Point(X + 2, Y));
-                        }
-                }
-                else
-                {
-                    if (!(chessFigures.Find(x => x.X == 1 && x.Y == 8) is null))
-                        if (!(chessFigures.Find(x => x.X == 1 && x.Y == 8 && x.GetType().Name == "Rock" && x.FigureGroup == this.FigureGroup && !x.Turned) is null))
-                        {
-                            bool canRooking = true;
-                            for (uint i = X - 1; i != 1; --i)
+                                if (canRooking)
+                                    points.Add(new Point(X + 2, Y));
+                            }
+                    }
+                    else
+                    {
+                        if (!(chessFigures.Find(x => x.X == 1 && x.Y == 8) is null))
+                            if (!(chessFigures.Find(x => x.X == 1 && x.Y == 8 && x.GetType().Name == "Rock" && x.FigureGroup == this.FigureGroup && !x.Turned) is null))
                             {
-                                if (!(chessFigures.Find(x => x.X == i && x.Y == Y) is null))
+                                bool canRooking = true;
+                                for (uint i = X - 1; i != 1; --i)
                                 {
-                                    canRooking = false;
-                                    break;
+                                    if (!(chessFigures.Find(x => x.X == i && x.Y == Y) is null) || PositionChecked(chessFigures, new Point(i, Y)))
+                                    {
+                                        canRooking = false;
+                                        break;
+                                    }
                                 }
-                            }
 
-                            if (canRooking)
-                                points.Add(new Point(X - 2, Y));
-                        }
-                    if (!(chessFigures.Find(x => x.X == 8 && x.Y == 8) is null))
-                        if (!(chessFigures.Find(x => x.X == 8 && x.Y == 8 && x.GetType().Name == "Rock" && x.FigureGroup == this.FigureGroup && !x.Turned) is null))
-                        {
-                            bool canRooking = true;
-                            for (uint i = X + 1; i != 8; ++i)
+                                if (canRooking)
+                                    points.Add(new Point(X - 2, Y));
+                            }
+                        if (!(chessFigures.Find(x => x.X == 8 && x.Y == 8) is null))
+                            if (!(chessFigures.Find(x => x.X == 8 && x.Y == 8 && x.GetType().Name == "Rock" && x.FigureGroup == this.FigureGroup && !x.Turned) is null))
                             {
-                                if (!(chessFigures.Find(x => x.X == i && x.Y == Y) is null))
+                                bool canRooking = true;
+                                for (uint i = X + 1; i != 8; ++i)
                                 {
-                                    canRooking = false;
-                                    break;
+                                    if (!(chessFigures.Find(x => x.X == i && x.Y == Y) is null) || PositionChecked(chessFigures, new Point(i, Y)))
+                                    {
+                                        canRooking = false;
+                                        break;
+                                    }
                                 }
-                            }
 
-                            if (canRooking)
-                                points.Add(new Point(X + 2, Y));
-                        }
-                }
+                                if (canRooking)
+                                    points.Add(new Point(X + 2, Y));
+                            }
+                    }
             }
 
-            points.RemoveAll(x => !Board.ValidCell(x));
+            points.RemoveAll(x => !Board.ValidCell(x) || PositionChecked(chessFigures,new Point(x.X,x.Y)));
             points.RemoveAll(x =>
             !(chessFigures.Find(y => y.X == x.X && y.Y == x.Y && y.FigureGroup == this.FigureGroup) is null));
 

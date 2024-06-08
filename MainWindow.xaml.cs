@@ -78,9 +78,9 @@ namespace ChessGame
                 
 
                 if (compIndex %2 == 0)
-                    rectangle.Fill = new SolidColorBrush(Colors.White);
-                else
                     rectangle.Fill = new SolidColorBrush(Colors.Black);
+                else
+                    rectangle.Fill = new SolidColorBrush(Colors.White);
 
                 CellsGrid.Children.Add(rectangle);
             }
