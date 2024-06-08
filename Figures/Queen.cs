@@ -201,5 +201,131 @@ namespace ChessGame
         {
             Move((uint)point.X, (uint)point.Y);
         }
+
+        public override List<Point> GetAttackedMoveCells(List<ChessFigure> chessFigures)
+        {
+            List<Point> points = new List<Point>();
+
+            bool stop = false;
+            //Main diagonal
+            {
+                uint x, y;
+
+                stop = false;
+                x = (uint)X;
+                y = (uint)Y;
+                while (Board.ValidCell(++x, ++y))
+                {
+                    if (stop)
+                        break;
+
+                    if (!(chessFigures.Find(el => el.X == x && el.Y == y) is null))
+                        stop = true;
+
+                    points.Add(new Point(x, y));
+                }
+
+                stop = false;
+                x = (uint)X;
+                y = (uint)Y;
+                while (Board.ValidCell(--x, --y))
+                {
+                    if (stop)
+                        break;
+
+                    if (!(chessFigures.Find(el => el.X == x && el.Y == y) is null))
+                        stop = true;
+
+                    points.Add(new Point(x, y));
+                }
+
+            }
+            //Side diagonal
+            {
+                uint x, y;
+
+                stop = false;
+                x = (uint)X;
+                y = (uint)Y;
+                while (Board.ValidCell(--x, ++y))
+                {
+                    if (stop)
+                        break;
+
+                    if (!(chessFigures.Find(el => el.X == x && el.Y == y) is null))
+                        stop = true;
+
+                    points.Add(new Point(x, y));
+                }
+
+                stop = false;
+                x = (uint)X;
+                y = (uint)Y;
+                while (Board.ValidCell(++x, --y))
+                {
+                    if (stop)
+                        break;
+
+                    if (!(chessFigures.Find(el => el.X == x && el.Y == y) is null))
+                        stop = true;
+
+                    points.Add(new Point(x, y));
+                }
+            }
+            points.RemoveAll(x => !Board.ValidCell(x));
+
+            //Rook
+            //Hor
+            stop = false;
+            for (uint i = X - 1; i != 0; --i)
+            {
+                if (stop)
+                    break;
+
+                if (!(chessFigures.Find(el => el.X == i && el.Y == Y) is null))
+                    stop = true;
+
+                points.Add(new Point(i, Y));
+            }
+
+            stop = false;
+            for (uint i = X + 1; i != 9; ++i)
+            {
+                if (stop)
+                    break;
+
+                if (!(chessFigures.Find(el => el.X == i && el.Y == Y) is null))
+                    stop = true;
+
+                points.Add(new Point(i, Y));
+            }
+            //Vert
+            stop = false;
+            for (uint i = Y - 1; i != 0; --i)
+            {
+                if (stop)
+                    break;
+
+                if (!(chessFigures.Find(el => el.X == X && el.Y == i) is null))
+                    stop = true;
+
+                points.Add(new Point(X, i));
+            }
+
+            stop = false;
+            for (uint i = Y + 1; i != 9; ++i)
+            {
+                if (stop)
+                    break;
+
+                if (!(chessFigures.Find(el => el.X == X && el.Y == i) is null))
+                    stop = true;
+
+                points.Add(new Point(X, i));
+            }
+            points.RemoveAll(x => !Board.ValidCell(x));
+
+            return points;
+        }
     }
 }

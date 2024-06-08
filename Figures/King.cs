@@ -53,7 +53,7 @@ namespace ChessGame
                     continue;
                 }
 
-                if (chessFigures.ElementAt(i).GetMoveCells(chessFigures).Contains(point))
+                if (chessFigures.ElementAt(i).GetAttackedMoveCells(chessFigures).Contains(point))
                 {
                     res = true;
                     break;
@@ -179,6 +179,14 @@ namespace ChessGame
 
             if (!(FigureSelected is null))
                 FigureSelected(this, mouseEventArgs);
+        }
+
+        public override List<Point> GetAttackedMoveCells(List<ChessFigure> chessFigures)
+        {
+            List<Point> points = GetDefaultMoveCells();
+            points.RemoveAll(x => !Board.ValidCell(x));
+
+            return points;
         }
     }
 }

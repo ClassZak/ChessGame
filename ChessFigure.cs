@@ -39,7 +39,7 @@ namespace ChessGame
             this.Image.Margin = Board.MarginFromCoords(this.X, this.Y);
         }
         public abstract List<Point> GetMoveCells(List<ChessFigure> chessFigures);
-
+        public abstract List<Point> GetAttackedMoveCells(List<ChessFigure> chessFigures);
 
 
 

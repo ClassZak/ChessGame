@@ -109,6 +109,79 @@ namespace ChessGame
             return points;
         }
 
+        public override List<Point> GetAttackedMoveCells(List<ChessFigure> chessFigures)
+        {
+            List<Point> points = new List<Point>();
+
+            //Main diagonal
+            {
+                uint x, y;
+
+                bool stop = false;
+                x = (uint)X;
+                y = (uint)Y;
+                while (Board.ValidCell(++x, ++y))
+                {
+                    if (stop)
+                        break;
+
+                    if (!(chessFigures.Find(el => el.X == x && el.Y == y) is null))
+                        stop = true;
+
+                    points.Add(new Point(x, y));
+                }
+
+                stop = false;
+                x = (uint)X;
+                y = (uint)Y;
+                while (Board.ValidCell(--x, --y))
+                {
+                    if (stop)
+                        break;
+
+                    if (!(chessFigures.Find(el => el.X == x && el.Y == y) is null))
+                        stop = true;
+
+                    points.Add(new Point(x, y));
+                }
+
+            }
+            //Side diagonal
+            {
+                uint x, y;
+
+                bool stop = false;
+                x = (uint)X;
+                y = (uint)Y;
+                while (Board.ValidCell(--x, ++y))
+                {
+                    if (stop)
+                        break;
+
+                    if (!(chessFigures.Find(el => el.X == x && el.Y == y) is null))
+                        stop = true;
+
+                    points.Add(new Point(x, y));
+                }
+
+                stop = false;
+                x = (uint)X;
+                y = (uint)Y;
+                while (Board.ValidCell(++x, --y))
+                {
+                    if (stop)
+                        break;
+
+                    if (!(chessFigures.Find(el => el.X == x && el.Y == y) is null))
+                        stop = true;
+
+                    points.Add(new Point(x, y));
+                }
+            }
+            points.RemoveAll(x => !Board.ValidCell(x));
+
+            return points;
+        }
 
         public override void Move(uint X, uint Y)
         {

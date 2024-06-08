@@ -36,6 +36,26 @@ namespace ChessGame
 
             return points;
         }
+
+        public override List<Point> GetAttackedMoveCells(List<ChessFigure> chessFigures)
+        {
+            List<Point> points = new List<Point>
+            {
+                new Point(X - 1, Y + 2),
+                new Point(X + 1, Y + 2),
+                new Point(X + 2, Y + 1),
+                new Point(X + 2, Y - 1),
+                new Point(X + 1, Y - 2),
+                new Point(X - 1, Y - 2),
+                new Point(X - 2, Y - 1),
+                new Point(X - 2, Y + 1)
+            };
+
+            points.RemoveAll(x => !Board.ValidCell(x));
+
+            return points;
+        }
+
         public override void Move(uint X, uint Y)
         {
             this.X = X;
