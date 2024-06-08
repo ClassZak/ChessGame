@@ -21,6 +21,16 @@ namespace ChessGame
             this.X = X;
             this.Y = Y;
         }
+        public ChessFigure(ChessFigure other)
+        {
+            this.Turned=other.Turned;
+            this.X = other.X;
+            this.Y = other.Y;
+            this.Image=other.Image;
+            this.FigureGroup=other.FigureGroup;
+            this.FigureType=other.FigureType;
+            this.Selected=other.Selected;
+        }
 
 
         public bool Turned { get; protected set; }

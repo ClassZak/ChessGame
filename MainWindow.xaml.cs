@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ChessGame
 {
@@ -23,6 +24,7 @@ namespace ChessGame
     {
         private Board _board;
         public static MediaPlayer MediaPlayer;
+        private string[] TurnDescription = { "Ход белых", "Ход чёрных" };
         public MainWindow()
         {
             InitializeComponent();
@@ -34,6 +36,8 @@ namespace ChessGame
         public void RunGame()
         {
             _board= new Board(this.Board);
+            _board.FigureCaptured += new EventHandler(FigureCaptured);
+            _board.FigureMoved += new EventHandler(ChangeMoveDescriptionHandler);
         }
 
 
@@ -87,16 +91,105 @@ namespace ChessGame
             }
         }
 
-        private void NewGameClick(object sender, RoutedEventArgs e)
+        private void NewGame(object sender, RoutedEventArgs e)
         {
             _board.ResetGame(Board);
+            InitCells();
+            CapturedWhiteGrid.Children.Clear();
+            CapturedBlackGrid.Children.Clear();
+            ChangeMoveDescription(FigureGroup.White);
         }
 
-        private void ExitClicked(object sender, RoutedEventArgs e)
+        private void ExitGame(object sender, RoutedEventArgs e)
         {
             if(!(MediaPlayer is null))
                 MediaPlayer.Stop();
             this.Close();
+        }
+
+        private void EndGame(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Игра завершена!");
+
+            MessageBoxResult result = MessageBox.Show("Начать сначала?", "Новая игра", MessageBoxButton.YesNo);
+
+            if (result == MessageBoxResult.Yes)
+                NewGame(sender, e);
+            else if (result == MessageBoxResult.No)
+                ExitGame(sender, e);
+        }
+
+        private void FigureCaptured(object sender, EventArgs e)
+        {
+            ChessGame.Board board=(ChessGame.Board)sender;
+            ChessFigure figure=((FigureCapturedEventArg)(e)).ChessFigure;
+
+
+            if(!(figure is null || board is null))
+            {
+                string filemane = "FigureImages/";
+
+
+                if (figure.FigureGroup == FigureGroup.White)
+                    filemane += "w";
+                else
+                    filemane += "b";
+
+                switch(figure.FigureType)
+                {
+                    case FigureType.Pawn:
+                        filemane += "P";
+                        break;
+                    case FigureType.Queen:
+                        filemane += "Q";
+                        break;
+                    case FigureType.Knight:
+                        filemane += "N";
+                        break;
+                    case FigureType.King:
+                        filemane += "K";
+                        break;
+                    case FigureType.Bishop:
+                        filemane += "B";
+                        break;
+                    case FigureType.Rock:
+                        filemane += "R";
+                        break;
+                }
+                filemane += ".png";
+
+                System.Windows.Controls.Image image=ImageBuilder.CreateImage(filemane);
+
+                if(figure.FigureGroup==FigureGroup.White)
+                {
+                    CapturedWhiteGrid.Children.Add(image);
+                }
+                else
+                {
+                    CapturedBlackGrid.Children.Add(image);
+                }
+            }
+        }
+        private void ChangeMoveDescriptionHandler(object sender, EventArgs eventArgs)
+        {
+            ChangeMoveDescription(((ChessGame.Board)(sender)).Turn);
+        }
+        private void ChangeMoveDescription(FigureGroup turn)
+        {
+            if(turn == FigureGroup.White)
+            {
+                DescriptionTable.Text = TurnDescription[0];
+                DescriptionTable.Foreground = new SolidColorBrush(Colors.White);
+                DescriptionTable.FontSize = 20;
+                DescriptionTable.FontWeight = FontWeights.Bold;
+            }
+            else
+            {
+                DescriptionTable.Text = TurnDescription[1];
+                DescriptionTable.Foreground = new SolidColorBrush(Colors.Black);
+                DescriptionTable.FontSize = 20;
+                DescriptionTable.FontWeight = FontWeights.Bold;
+            }
         }
     }
 }

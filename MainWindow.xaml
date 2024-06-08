@@ -18,15 +18,15 @@
             <ColumnDefinition Width="120" />
             <ColumnDefinition Width="7*" />
         </Grid.ColumnDefinitions>
-
-
-
-        <Menu Grid.Row="0" Grid.ColumnSpan="3">
+        
+        
+        
+        <Menu Grid.ColumnSpan="3">
             <MenuItem Header="Игра">
-                <MenuItem Header="Новая игра" Click="NewGameClick"/>
-                <MenuItem Header="Завершить партию" />
-                <Separator />
-                <MenuItem Header="Выход" Click="ExitClicked"/>
+                <MenuItem Header="Новая игра" Click="NewGame"/>
+                <MenuItem Header="Завершить партию" Click="EndGame"/>
+                <Separator/>
+                <MenuItem Header="Выход" Click="ExitGame"/>
             </MenuItem>
         </Menu>
 
@@ -43,6 +43,10 @@
                     <ColumnDefinition Width="640"/>
                     <ColumnDefinition Width="160"/>
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
 
                 <Grid Width="160" Background="White">
                     <StackPanel>
@@ -70,6 +74,18 @@
                         <UniformGrid Name="CapturedBlackGrid" Rows="8" Columns="2" Width="120"/>
                     </StackPanel>
                 </Grid>
+
+
+
+                <TextBlock
+                    Background="Gray"
+                    Grid.ColumnSpan="3"
+                    Grid.Row="1"
+                    TextAlignment="Center"
+                    Name="DescriptionTable"
+                    >
+                    <Run Foreground="White" FontSize="20" FontWeight="Bold">Ход белых</Run>
+                </TextBlock>
             </Grid>
 
         </Viewbox>

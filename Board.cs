@@ -32,6 +32,8 @@ namespace ChessGame
         public const float BoardHeight = 640;
 
 
+
+        #region Constructor and reset game
         public Board(System.Windows.Controls.Grid Grid)
         {
             NeedRotate = false;
@@ -231,6 +233,7 @@ namespace ChessGame
                     ((Rock)(ChessFigures.ElementAt(i))).FigureSelected += new MouseButtonEventHandler(this.FigureSelectedHandler);
             }
         }
+        #endregion
 
 
         public void UpdateChessImages(System.Windows.Controls.Grid Grid)
@@ -325,6 +328,8 @@ namespace ChessGame
         #endregion
         #region Events
         public event MouseButtonEventHandler FigureSelected;
+        public event EventHandler FigureCaptured;
+        public event EventHandler FigureMoved;
 
         public void FigureSelectedHandler(object sender,MouseButtonEventArgs mouseButtonEventArgs)
         {
@@ -397,6 +402,13 @@ namespace ChessGame
 
             try
             {
+                if(!(ChessFigures.Find(x=>x.X==point.X && x.Y==point.Y) is null))
+                {
+                    if (!(FigureCaptured is null))
+                        FigureCaptured(this, new FigureCapturedEventArg(ChessFigures.Find(x => x.X == point.X && x.Y == point.Y)));
+                }
+
+
                 int del=
                 this.ChessFigures.RemoveAll(x => x.X == point.X && x.Y == point.Y);
 
@@ -417,21 +429,22 @@ namespace ChessGame
                 if (soundKind == SoundKind.None)
                     soundKind = SoundKind.Move;
             }
+            PlayGameSound(soundKind);
             chessFigure.Move(point);
 
             
-                
-
             if (Turn == FigureGroup.White)
                 Turn = FigureGroup.Black;
             else
                 Turn = FigureGroup.White;
+
+            if (!(FigureMoved is null))
+                FigureMoved(this, null);
+
+
             NeedRotate=true;
-
             ResetSelection();
-
             movesGridCollection.Clear();
-            PlayGameSound(soundKind);
         }
 
         private void Rooking(bool isShortDirection, FigureGroup figureGroup)

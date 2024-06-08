@@ -72,9 +72,13 @@
     </ApplicationDefinition>
     <Compile Include="Builders\FigureBuilder.cs" />
     <Compile Include="Enums\GameType.cs" />
+    <Compile Include="FigureCapturedEventArg.cs" />
     <Compile Include="Figures\King.cs" />
     <Compile Include="Figures\Queen.cs" />
     <Compile Include="Figures\Rock.cs" />
+    <Compile Include="PawnPromotionWindow.xaml.cs">
+      <DependentUpon>PawnPromotionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SoundKind.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -95,6 +99,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PawnPromotionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Figures\Pawn.cs" />
