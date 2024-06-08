@@ -92,10 +92,11 @@ namespace ChessGame
             _board.ResetGame(Board);
         }
 
-        private void RotateBoard(object sender, EventArgs e)
+        private void ExitClicked(object sender, RoutedEventArgs e)
         {
-            //ScaleTransform scaleTransform = new ScaleTransform((((Board)(sender)).Turn == FigureGroup.Black) ? -1 : 1, (((Board)(sender)).Turn == FigureGroup.Black) ? -1 : 1);
-            //CellsGrid.LayoutTransform= scaleTransform;
+            if(!(MediaPlayer is null))
+                MediaPlayer.Stop();
+            this.Close();
         }
     }
 }
