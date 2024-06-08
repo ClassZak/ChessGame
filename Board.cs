@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -240,7 +241,9 @@ namespace ChessGame
         {
             if(NeedRotate)
             {
-                ScaleTransform scaleTransform = new ScaleTransform((Turn == FigureGroup.Black) ? -1 : 1, (Turn==FigureGroup.Black) ? -1 : 1);
+                ScaleTransform scaleTransform =
+                    new ScaleTransform
+                    ((Turn == FigureGroup.Black) ? -1 : 1, (Turn==FigureGroup.Black) ? -1 : 1);
                 Grid.LayoutTransform = scaleTransform;
             }
 
@@ -249,7 +252,9 @@ namespace ChessGame
             {
                 if(NeedRotate)
                 {
-                    ScaleTransform scaleTransform = new ScaleTransform((Turn == FigureGroup.Black) ? -1 : 1, (Turn == FigureGroup.Black) ? -1 : 1);
+                    ScaleTransform scaleTransform =
+                        new ScaleTransform
+                        ((Turn == FigureGroup.Black) ? -1 : 1, (Turn == FigureGroup.Black) ? -1 : 1);
                     el.Image.LayoutTransform= scaleTransform;
                 }
                 
@@ -268,7 +273,8 @@ namespace ChessGame
                 rectangle.Stroke = new SolidColorBrush(Colors.MediumOrchid);
                 rectangle.StrokeThickness = 8;
                 rectangle.Margin =
-                    MarginFromCoords(ChessFigures.ElementAt(lastSelected).X, ChessFigures.ElementAt(lastSelected).Y);
+                    MarginFromCoords
+                    (ChessFigures.ElementAt(lastSelected).X, ChessFigures.ElementAt(lastSelected).Y);
                 Grid.Children.Add(rectangle);
             }
 
@@ -405,7 +411,14 @@ namespace ChessGame
                 if(!(ChessFigures.Find(x=>x.X==point.X && x.Y==point.Y) is null))
                 {
                     if (!(FigureCaptured is null))
-                        FigureCaptured(this, new FigureCapturedEventArg(ChessFigures.Find(x => x.X == point.X && x.Y == point.Y)));
+                        FigureCaptured
+                        (
+                            this,
+                            new FigureCapturedEventArg
+                            (
+                                ChessFigures.Find(x => x.X == point.X && x.Y == point.Y)
+                            )
+                        );
                 }
 
 
@@ -445,6 +458,56 @@ namespace ChessGame
             NeedRotate=true;
             ResetSelection();
             movesGridCollection.Clear();
+
+
+            ChessFigure chessFigure1 = ChessFigures.Find(x => (x.Y == 1 || x.Y == 8) && x.FigureType==FigureType.Pawn);
+            if(!(chessFigure1 is null))
+            {
+                PawnPromotionWindow pawnPromotionWindow = new PawnPromotionWindow(chessFigure1.FigureGroup);
+                pawnPromotionWindow.ShowDialog();
+
+               
+
+
+                string filemane = "FigureImages/";
+
+
+                if (chessFigure1.FigureGroup == FigureGroup.White)
+                    filemane += "w";
+                else
+                    filemane += "b";
+
+                switch (pawnPromotionWindow.SelectedFigureType)
+                {
+                    case FigureType.Pawn:
+                        filemane += "P";
+                        break;
+                    case FigureType.Queen:
+                        filemane += "Q";
+                        break;
+                    case FigureType.Knight:
+                        filemane += "N";
+                        break;
+                    case FigureType.King:
+                        filemane += "K";
+                        break;
+                    case FigureType.Bishop:
+                        filemane += "B";
+                        break;
+                    case FigureType.Rock:
+                        filemane += "R";
+                        break;
+                }
+                filemane += ".png";
+
+                ChessFigure newFig = FigureBuilder.CreateFigure(chessFigure1.X, chessFigure1.Y, pawnPromotionWindow.SelectedFigureType, chessFigure1.FigureGroup, filemane);
+                
+                if(Turn==FigureGroup.Black)
+                    newFig.Image.LayoutTransform = new ScaleTransform(-1, -1);
+
+                ChessFigures.Add(newFig);
+                ChessFigures.Remove(chessFigure1);
+            }
         }
 
         private void Rooking(bool isShortDirection, FigureGroup figureGroup)
@@ -477,16 +540,20 @@ namespace ChessGame
             switch (soundKind)
             {
                 case SoundKind.Move:
-                    MainWindow.MediaPlayer.Open(new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(),"Sounds/Move.mp3")));
+                    MainWindow.MediaPlayer.Open
+                        (new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(),"Sounds/Move.mp3")));
                     break;
                 case SoundKind.Check:
-                    MainWindow.MediaPlayer.Open(new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Sounds/Move.mp3")));
+                    MainWindow.MediaPlayer.Open
+                        (new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Sounds/Move.mp3")));
                     break;
                 case SoundKind.Caption:
-                    MainWindow.MediaPlayer.Open(new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Sounds/Caption.mp3")));
+                    MainWindow.MediaPlayer.Open
+                        (new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Sounds/Caption.mp3")));
                     break;
                 case SoundKind.Rooking:
-                    MainWindow.MediaPlayer.Open(new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Sounds/Rooking.mp3")));
+                    MainWindow.MediaPlayer.Open
+                        (new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Sounds/Rooking.mp3")));
                     break;
             }
             MainWindow.MediaPlayer.Play();
