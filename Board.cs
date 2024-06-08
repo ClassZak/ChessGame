@@ -41,7 +41,8 @@ namespace ChessGame
         }
         public void ResetGame(System.Windows.Controls.Grid Grid)
         {
-            FigureSelected=null;
+            NeedRotate = true;
+            FigureSelected =null;
             ChessFigures = new List<ChessFigure>();
 
             Turn = FigureGroup.White;
@@ -232,12 +233,11 @@ namespace ChessGame
         }
 
 
-        public event EventHandler BoardRotated;
         public void UpdateChessImages(System.Windows.Controls.Grid Grid)
         {
             if(NeedRotate)
             {
-                ScaleTransform scaleTransform = new ScaleTransform(1, (Turn==FigureGroup.Black) ? -1 : 1);
+                ScaleTransform scaleTransform = new ScaleTransform((Turn == FigureGroup.Black) ? -1 : 1, (Turn==FigureGroup.Black) ? -1 : 1);
                 Grid.LayoutTransform = scaleTransform;
             }
 
@@ -246,15 +246,13 @@ namespace ChessGame
             {
                 if(NeedRotate)
                 {
-                    ScaleTransform scaleTransform = new ScaleTransform(1, (Turn == FigureGroup.Black) ? -1 : 1);
+                    ScaleTransform scaleTransform = new ScaleTransform((Turn == FigureGroup.Black) ? -1 : 1, (Turn == FigureGroup.Black) ? -1 : 1);
                     el.Image.LayoutTransform= scaleTransform;
                 }
                 
                 Grid.Children.Add(el.Image);
             }
             NeedRotate = false;
-            if(!(BoardRotated is null))
-                BoardRotated(this,null);
 
 
 
