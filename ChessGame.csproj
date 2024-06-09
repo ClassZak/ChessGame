@@ -72,10 +72,11 @@
     </ApplicationDefinition>
     <Compile Include="Builders\FigureBuilder.cs" />
     <Compile Include="Enums\GameType.cs" />
-    <Compile Include="FigureCapturedEventArg.cs" />
+    <Compile Include="EventArgs\FigureCapturedEventArg.cs" />
     <Compile Include="Figures\King.cs" />
     <Compile Include="Figures\Queen.cs" />
     <Compile Include="Figures\Rock.cs" />
+    <Compile Include="EventArgs\GameEndedEventArgs.cs" />
     <Compile Include="PawnPromotionWindow.xaml.cs">
       <DependentUpon>PawnPromotionWindow.xaml</DependentUpon>
     </Compile>

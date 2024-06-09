@@ -20,10 +20,12 @@ namespace ChessGame
         private List<ChessFigure> ChessFigures = new List<ChessFigure>();
         private bool needRedraw = false;
         public FigureGroup Turn { get; private set; }
+        public bool GameEnded { get; private set; }
         private int lastSelected = -1;
 
         public GameType _gameType=GameType.Default;
         public List<object> movesGridCollection=new List<object>();
+        public event EventHandler GameEndedEvent;
         public bool NeedRotate {  get; private set; }
 
 
@@ -48,6 +50,7 @@ namespace ChessGame
             needRedraw = true;
             FigureSelected =null;
             ChessFigures = new List<ChessFigure>();
+            GameEnded = false;
 
             Turn = FigureGroup.White;
             lastSelected = -1;
@@ -279,6 +282,9 @@ namespace ChessGame
                 rectangle.Margin =
                     MarginFromCoords
                     (ChessFigures.ElementAt(lastSelected).X, ChessFigures.ElementAt(lastSelected).Y);
+
+                rectangle.MouseDown +=
+                    new MouseButtonEventHandler(ChessFigures.Find(x => x.Selected == true).SelectionHandling);
                 Grid.Children.Add(rectangle);
             }
 
@@ -316,7 +322,7 @@ namespace ChessGame
             return CoordsFromMargin(thickness.Left, thickness.Top);
         }
         #endregion
-
+        #region King safety
         private bool KingDangerousMove(ChessFigure figure, Point point, List<ChessFigure> chessFiguresArg)
         {
             List<ChessFigure> checkList = new List<ChessFigure>();
@@ -397,10 +403,7 @@ namespace ChessGame
 
             return isDraw;
         }
-
-
-
-
+        #endregion
         public void ResetSelection()
         {
             if (this.lastSelected == -1)
@@ -427,6 +430,10 @@ namespace ChessGame
 
         public void FigureSelectedHandler(object sender,MouseButtonEventArgs mouseButtonEventArgs)
         {
+            if(GameEnded)
+                return;
+
+
             ChessFigure chessFigure=sender as ChessFigure;
             if (chessFigure is null)
                 throw new ArgumentException("Wrong reference");
@@ -597,13 +604,28 @@ namespace ChessGame
             if (PosIsCheck(ChessFigures))
             {
                 if (PosIsMate(ChessFigures))
-                    MessageBox.Show("Победа " + ((Turn == FigureGroup.Black) ? "белых" : "черных"), "Объявлен мат!");
+                {
+                    string message = "Победа " + ((Turn == FigureGroup.Black) ? "белых" : "чёрных");
+                    
+                    if (!(GameEndedEvent is null))
+                        GameEndedEvent
+                        (
+                            this,
+                            new GameEndedEventArgs
+                            (message,Turn,false)
+                        );
+                    GameEnded = true;
+                    MessageBox.Show(message, "Объявлен мат!");
+                }
                 else
                     MessageBox.Show("Шах");
             }
             else
                 if(PosIsDraw(ChessFigures))
             {
+                if (!(GameEndedEvent is null))
+                    GameEndedEvent(this, new GameEndedEventArgs("Ничья",Turn,true));
+                GameEnded = true;
                 MessageBox.Show("Ничья");
             }
             needRedraw = true;

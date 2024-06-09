@@ -38,6 +38,7 @@ namespace ChessGame
             _board= new Board(this.Board);
             _board.FigureCaptured += new EventHandler(FigureCaptured);
             _board.FigureMoved += new EventHandler(ChangeMoveDescriptionHandler);
+            _board.GameEndedEvent += new EventHandler(GameEndedEventHandler);
         }
 
 
@@ -98,6 +99,7 @@ namespace ChessGame
             CapturedWhiteGrid.Children.Clear();
             CapturedBlackGrid.Children.Clear();
             ChangeMoveDescription(FigureGroup.White);
+            EndGameMenuButton.IsEnabled = true;
         }
 
         private void ExitGame(object sender, RoutedEventArgs e)
@@ -115,8 +117,6 @@ namespace ChessGame
 
             if (result == MessageBoxResult.Yes)
                 NewGame(sender, e);
-            else if (result == MessageBoxResult.No)
-                ExitGame(sender, e);
         }
 
         private void FigureCaptured(object sender, EventArgs e)
@@ -156,6 +156,26 @@ namespace ChessGame
                 DescriptionTable.FontSize = 20;
                 DescriptionTable.FontWeight = FontWeights.Bold;
             }
+        }
+
+
+        private void GameEndedEventHandler(object sender,EventArgs eventArgs)
+        {
+            GameEndedEventArgs gameEndedEventArgs= eventArgs as GameEndedEventArgs;
+
+            if (gameEndedEventArgs is null)
+                return;
+
+            DescriptionTable.Text= gameEndedEventArgs.Message;
+            DescriptionTable.Foreground = new SolidColorBrush
+            (
+                gameEndedEventArgs.IsDraw ? Colors.LightGray :
+                (gameEndedEventArgs.WinGroup == FigureGroup.White ? Colors.Black: Colors.White)
+            );
+
+            DescriptionTable.FontSize = 20;
+            DescriptionTable.FontWeight = FontWeights.Bold;
+            EndGameMenuButton.IsEnabled = false;
         }
     }
 }

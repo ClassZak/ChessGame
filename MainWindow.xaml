@@ -24,7 +24,7 @@
         <Menu Grid.ColumnSpan="3">
             <MenuItem Header="Игра">
                 <MenuItem Header="Новая игра" Click="NewGame"/>
-                <MenuItem Header="Завершить партию" Click="EndGame"/>
+                <MenuItem Header="Завершить партию" Click="EndGame" Name="EndGameMenuButton"/>
                 <Separator/>
                 <MenuItem Header="Выход" Click="ExitGame"/>
             </MenuItem>
