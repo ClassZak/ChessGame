@@ -54,9 +54,12 @@ namespace ChessGame
                 }
 
                 List<ChessFigure> currectCheckList = new List<ChessFigure>(chessFigures);
-                // Удаляем нужный элемент из второго списка
-                ChessFigure elementToRemove = this;
-                currectCheckList.Remove(elementToRemove);
+                // Remove elements
+                currectCheckList.Remove(this);
+                currectCheckList.RemoveAll
+                (
+                    x=>x.FigureGroup != this.FigureGroup && this.GetDefaultMoveCells().Contains(new Point(x.X,x.Y))
+                );
 
                 if (chessFigures.ElementAt(i).GetAttackedMoveCells(currectCheckList).Contains(point))
                 {

@@ -21,6 +21,8 @@ namespace ChessGame
 
         public FigureGroup Turn { get; private set; }
         private int lastSelected = -1; 
+        bool Check=false;
+        bool Mate=false;
 
         public GameType _gameType=GameType.Default;
         public List<object> movesGridCollection=new List<object>();
@@ -235,8 +237,6 @@ namespace ChessGame
             }
         }
         #endregion
-
-
         public void UpdateChessImages(System.Windows.Controls.Grid Grid)
         {
             if(NeedRotate)
@@ -282,8 +282,6 @@ namespace ChessGame
                 for (int i = 0; i < movesGridCollection.Count; ++i)
                     Grid.Children.Add((UIElement)movesGridCollection[i]);
         }
-
-
         #region Coordinates converters 
         public static Thickness MarginFromCoords(Vector vector)
         {
@@ -532,7 +530,6 @@ namespace ChessGame
             }
         }
         #endregion
-
         #region Sounds
         public void PlayGameSound(SoundKind soundKind)
         {
