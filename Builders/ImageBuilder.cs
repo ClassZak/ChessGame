@@ -31,5 +31,36 @@ namespace ChessGame
 
             return image;
         }
+
+        public static string GetImageName(FigureGroup figureGroup, FigureType figureType)
+        {
+            string filename;
+            filename = (figureGroup == FigureGroup.White) ? "w" : "b";
+
+            switch (figureType)
+            {
+                case FigureType.Pawn:
+                    filename += "P";
+                    break;
+                case FigureType.Queen:
+                    filename += "Q";
+                    break;
+                case FigureType.King:
+                    filename += "K";
+                    break;
+                case FigureType.Knight:
+                    filename += "N";
+                    break;
+                case FigureType.Rock:
+                    filename += "R";
+                    break;
+                case FigureType.Bishop:
+                    filename += "B";
+                    break;
+            }
+            filename += ".png";
+
+            return System.IO.Path.Combine("FigureImages", filename);
+        }
     }
 }

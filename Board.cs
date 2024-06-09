@@ -302,6 +302,31 @@ namespace ChessGame
             );
         }
 
+        private bool KingDangerousMove(ChessFigure figure, Point point,List<ChessFigure> chessFiguresArg)
+        {
+            List<ChessFigure> checkList=new List<ChessFigure>();
+            foreach(ChessFigure fig in chessFiguresArg)
+            {
+                checkList.Add
+                (
+                    FigureBuilder.CreateFigure
+                    (
+                        fig.X,
+                        fig.Y,
+                        fig.FigureType,
+                        fig.FigureGroup,
+                        ImageBuilder.GetImageName(fig.FigureGroup,fig.FigureType)
+                    )
+                );
+            }
+            checkList.Find(x=>x==figure).Move(point);
+            King king=(King)(ChessFigures.Find(x=>x.FigureType==FigureType.King && x.FigureGroup==figure.FigureGroup));
+
+            return king.PositionChecked(checkList, new Point(king.X, king.Y));
+        }
+
+
+
 
         public static Point CoordsFromMargin(double left,double top)
         {
@@ -371,6 +396,7 @@ namespace ChessGame
             //Steps
             movesGridCollection.Clear();
             List<Point> vectors=chessFigure.GetMoveCells(this.ChessFigures);
+            vectors.RemoveAll(x => KingDangerousMove(ChessFigures.Find(el=>el.Selected==true),x,ChessFigures));
             for(int i=0; i<vectors.Count;++i)
             {
                 Rectangle rectangle = new Rectangle();
@@ -464,41 +490,16 @@ namespace ChessGame
                 PawnPromotionWindow pawnPromotionWindow = new PawnPromotionWindow(chessFigure1.FigureGroup);
                 pawnPromotionWindow.ShowDialog();
 
-               
 
-
-                string filemane = "FigureImages/";
-
-
-                if (chessFigure1.FigureGroup == FigureGroup.White)
-                    filemane += "w";
-                else
-                    filemane += "b";
-
-                switch (pawnPromotionWindow.SelectedFigureType)
-                {
-                    case FigureType.Pawn:
-                        filemane += "P";
-                        break;
-                    case FigureType.Queen:
-                        filemane += "Q";
-                        break;
-                    case FigureType.Knight:
-                        filemane += "N";
-                        break;
-                    case FigureType.King:
-                        filemane += "K";
-                        break;
-                    case FigureType.Bishop:
-                        filemane += "B";
-                        break;
-                    case FigureType.Rock:
-                        filemane += "R";
-                        break;
-                }
-                filemane += ".png";
-
-                ChessFigure newFig = FigureBuilder.CreateFigure(chessFigure1.X, chessFigure1.Y, pawnPromotionWindow.SelectedFigureType, chessFigure1.FigureGroup, filemane);
+                ChessFigure newFig =
+                FigureBuilder.CreateFigure
+                (
+                    chessFigure1.X,
+                    chessFigure1.Y,
+                    pawnPromotionWindow.SelectedFigureType,
+                    chessFigure1.FigureGroup,
+                    ImageBuilder.GetImageName(chessFigure1.FigureGroup, pawnPromotionWindow.SelectedFigureType)
+                );
                 
                 if(Turn==FigureGroup.Black)
                     newFig.Image.LayoutTransform = new ScaleTransform(-1, -1);

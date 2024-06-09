@@ -34,13 +34,17 @@ namespace ChessGame
             if(group==FigureGroup.Black)
             {
                 image0.Source =
-                new BitmapImage(new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(),"FigureImages", "bQ.png")));
+                new BitmapImage
+                (new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(),"FigureImages", "bQ.png")));
                 image1.Source =
-                new BitmapImage(new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "FigureImages", "bR.png")));
+                new BitmapImage
+                (new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "FigureImages", "bR.png")));
                 image2.Source =
-                new BitmapImage(new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "FigureImages", "bB.png")));
+                new BitmapImage
+                (new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "FigureImages", "bB.png")));
                 image3.Source =
-                new BitmapImage(new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "FigureImages", "bN.png")));
+                new BitmapImage
+                (new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "FigureImages", "bN.png")));
             }
         }
 
