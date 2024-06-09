@@ -324,6 +324,12 @@ namespace ChessGame
 
             return king.PositionChecked(checkList, new Point(king.X, king.Y));
         }
+        public bool PosIsCheck(List<ChessFigure> chessFiguresArg)
+        {
+            King king = (King)(chessFiguresArg.Find(x => x.FigureGroup == Turn && x.FigureType == FigureType.King));
+
+            return king.PositionChecked(chessFiguresArg, new Point(king.X, king.Y));
+        }
 
 
 
@@ -396,7 +402,8 @@ namespace ChessGame
             //Steps
             movesGridCollection.Clear();
             List<Point> vectors=chessFigure.GetMoveCells(this.ChessFigures);
-            vectors.RemoveAll(x => KingDangerousMove(ChessFigures.Find(el=>el.Selected==true),x,ChessFigures));
+            if (ChessFigures.Find(x => x.Selected == true).FigureType != FigureType.King)
+                vectors.RemoveAll(x => KingDangerousMove(ChessFigures.Find(el => el.Selected == true), x, ChessFigures));
             for(int i=0; i<vectors.Count;++i)
             {
                 Rectangle rectangle = new Rectangle();
@@ -507,6 +514,10 @@ namespace ChessGame
                 ChessFigures.Add(newFig);
                 ChessFigures.Remove(chessFigure1);
             }
+
+
+            if (PosIsCheck(ChessFigures))
+                MessageBox.Show("Шах");
         }
 
         private void Rooking(bool isShortDirection, FigureGroup figureGroup)
