@@ -18,7 +18,7 @@ namespace ChessGame
     internal class Board
     {
         private List<ChessFigure> ChessFigures = new List<ChessFigure>();
-
+        private bool needRedraw = false;
         public FigureGroup Turn { get; private set; }
         private int lastSelected = -1;
 
@@ -45,6 +45,7 @@ namespace ChessGame
         public void ResetGame(System.Windows.Controls.Grid Grid)
         {
             NeedRotate = true;
+            needRedraw = true;
             FigureSelected =null;
             ChessFigures = new List<ChessFigure>();
 
@@ -237,7 +238,12 @@ namespace ChessGame
         #endregion
         public void UpdateChessImages(System.Windows.Controls.Grid Grid)
         {
-            if(NeedRotate)
+            if (!needRedraw)
+                return;
+            else
+                needRedraw = false;
+
+            if (NeedRotate)
             {
                 ScaleTransform scaleTransform =
                     new ScaleTransform
@@ -330,7 +336,8 @@ namespace ChessGame
             }
             checkList.RemoveAll(x => x.X == point.X && x.Y == point.Y);
             checkList.Find(x => x == figure).Move(point);
-            King king = (King)(ChessFigures.Find(x => x.FigureType == FigureType.King && x.FigureGroup == figure.FigureGroup));
+            King king =
+                (King)(ChessFigures.Find(x => x.FigureType == FigureType.King && x.FigureGroup == figure.FigureGroup));
 
             return king.PositionChecked(checkList, new Point(king.X, king.Y));
         }
@@ -339,8 +346,9 @@ namespace ChessGame
         public bool PosIsCheck(List<ChessFigure> chessFiguresArg)
         {
             King king = (King)(chessFiguresArg.Find(x => x.FigureGroup == Turn && x.FigureType == FigureType.King));
+            bool isChecked=king.PositionChecked(chessFiguresArg, new Point(king.X, king.Y));
 
-            return king.PositionChecked(chessFiguresArg, new Point(king.X, king.Y));
+            return isChecked;
         }
         public bool PosIsMate(List<ChessFigure> chessFiguresArg)
         {
@@ -400,6 +408,7 @@ namespace ChessGame
             this.ChessFigures.Find(x => x.Selected == true).Selected=false;
             this.lastSelected = -1;
             movesGridCollection.Clear();
+            needRedraw = true;
         }
         #region Cells validation
         public static bool ValidCell(Point point)
@@ -427,6 +436,7 @@ namespace ChessGame
             {
                 chessFigure.Selected = false;
                 ResetSelection();
+                needRedraw=true;
                 return;
             }
                 
@@ -434,6 +444,7 @@ namespace ChessGame
             {
                 lastSelected = -1;
                 movesGridCollection.Clear();
+                needRedraw = true;
                 return;
             }
             else
@@ -463,6 +474,7 @@ namespace ChessGame
 
                 movesGridCollection.Add(rectangle);
             }
+            needRedraw = true;
         }
 
         public void MoveChosen(object sender, MouseButtonEventArgs mouseEventArgs)
@@ -594,7 +606,7 @@ namespace ChessGame
             {
                 MessageBox.Show("Ничья");
             }
-                
+            needRedraw = true;
         }
 
         private void Rooking(bool isShortDirection, FigureGroup figureGroup)

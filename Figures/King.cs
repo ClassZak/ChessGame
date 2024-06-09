@@ -38,14 +38,14 @@ namespace ChessGame
         public bool PositionChecked(List<ChessFigure> chessFigures, Point point)
         {
             bool res = false;
-            for (int i = 0; i < chessFigures.Count; ++i)
+            foreach(ChessFigure chessFigure in chessFigures)
             {
-                if (chessFigures.ElementAt(i).FigureGroup == this.FigureGroup)
+                if (chessFigure.FigureGroup == this.FigureGroup)
                     continue;
 
-                if(chessFigures.ElementAt(i).GetType().Name=="King")
+                if(chessFigure.GetType().Name=="King")
                 {
-                    if(((King)(chessFigures.ElementAt(i))).GetDefaultMoveCells().Contains(point))
+                    if(((King)(chessFigure)).GetDefaultMoveCells().Contains(point))
                     {
                         res= true;
                         break;
@@ -58,10 +58,11 @@ namespace ChessGame
                 currectCheckList.Remove(this);
                 currectCheckList.RemoveAll
                 (
-                    x=>x.FigureGroup != this.FigureGroup && this.GetDefaultMoveCells().Contains(new Point(x.X,x.Y))
+                    x=>(x.FigureGroup != this.FigureGroup)
+                    && this.GetDefaultMoveCells().Contains(new Point(x.X,x.Y))
                 );
 
-                if (chessFigures.ElementAt(i).GetAttackedMoveCells(currectCheckList).Contains(point))
+                if (chessFigure.GetAttackedMoveCells(currectCheckList).Contains(point))
                 {
                     res = true;
                     break;
