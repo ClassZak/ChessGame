@@ -20,9 +20,7 @@ namespace ChessGame
         private List<ChessFigure> ChessFigures = new List<ChessFigure>();
 
         public FigureGroup Turn { get; private set; }
-        private int lastSelected = -1; 
-        bool Check=false;
-        bool Mate=false;
+        private int lastSelected = -1;
 
         public GameType _gameType=GameType.Default;
         public List<object> movesGridCollection=new List<object>();
@@ -302,37 +300,6 @@ namespace ChessGame
             );
         }
 
-        private bool KingDangerousMove(ChessFigure figure, Point point,List<ChessFigure> chessFiguresArg)
-        {
-            List<ChessFigure> checkList=new List<ChessFigure>();
-            foreach(ChessFigure fig in chessFiguresArg)
-            {
-                checkList.Add
-                (
-                    FigureBuilder.CreateFigure
-                    (
-                        fig.X,
-                        fig.Y,
-                        fig.FigureType,
-                        fig.FigureGroup,
-                        ImageBuilder.GetImageName(fig.FigureGroup,fig.FigureType)
-                    )
-                );
-            }
-            checkList.Find(x=>x==figure).Move(point);
-            King king=(King)(ChessFigures.Find(x=>x.FigureType==FigureType.King && x.FigureGroup==figure.FigureGroup));
-
-            return king.PositionChecked(checkList, new Point(king.X, king.Y));
-        }
-        public bool PosIsCheck(List<ChessFigure> chessFiguresArg)
-        {
-            King king = (King)(chessFiguresArg.Find(x => x.FigureGroup == Turn && x.FigureType == FigureType.King));
-
-            return king.PositionChecked(chessFiguresArg, new Point(king.X, king.Y));
-        }
-
-
-
 
         public static Point CoordsFromMargin(double left,double top)
         {
@@ -343,6 +310,89 @@ namespace ChessGame
             return CoordsFromMargin(thickness.Left, thickness.Top);
         }
         #endregion
+
+        private bool KingDangerousMove(ChessFigure figure, Point point, List<ChessFigure> chessFiguresArg)
+        {
+            List<ChessFigure> checkList = new List<ChessFigure>();
+            foreach (ChessFigure fig in chessFiguresArg)
+            {
+                checkList.Add
+                (
+                    FigureBuilder.CreateFigure
+                    (
+                        fig.X,
+                        fig.Y,
+                        fig.FigureType,
+                        fig.FigureGroup,
+                        ImageBuilder.GetImageName(fig.FigureGroup, fig.FigureType)
+                    )
+                );
+            }
+            checkList.RemoveAll(x => x.X == point.X && x.Y == point.Y);
+            checkList.Find(x => x == figure).Move(point);
+            King king = (King)(ChessFigures.Find(x => x.FigureType == FigureType.King && x.FigureGroup == figure.FigureGroup));
+
+            return king.PositionChecked(checkList, new Point(king.X, king.Y));
+        }
+
+
+        public bool PosIsCheck(List<ChessFigure> chessFiguresArg)
+        {
+            King king = (King)(chessFiguresArg.Find(x => x.FigureGroup == Turn && x.FigureType == FigureType.King));
+
+            return king.PositionChecked(chessFiguresArg, new Point(king.X, king.Y));
+        }
+        public bool PosIsMate(List<ChessFigure> chessFiguresArg)
+        {
+            if (!PosIsCheck(chessFiguresArg))
+                return false;
+
+            bool isMate = true;
+            foreach(ChessFigure chessFigure in chessFiguresArg.FindAll(x=>x.FigureGroup==Turn))
+            {
+                List<Point> positions = chessFigure.GetMoveCells(ChessFigures);
+                positions.RemoveAll(x => KingDangerousMove(chessFigure, x, ChessFigures));
+               
+                if (positions.Count>0)
+                {
+                    isMate = false;
+                    break;
+                }
+            }
+
+            if(
+                ((King)
+                (ChessFigures.Find(x=>x.FigureType==FigureType.King && x.FigureGroup==Turn)))
+                .GetMoveCells(ChessFigures).Count>0
+               )
+                isMate = false;
+
+            return isMate;
+        }
+        public bool PosIsDraw(List<ChessFigure> chessFiguresArg)
+        {
+            if (PosIsCheck(chessFiguresArg))
+                return false;
+
+            bool isDraw = true;
+            foreach (ChessFigure chessFigure in chessFiguresArg.FindAll(x => x.FigureGroup == Turn))
+            {
+                List<Point> positions = chessFigure.GetMoveCells(ChessFigures);
+                positions.RemoveAll(x => KingDangerousMove(chessFigure, x, ChessFigures));
+
+                if (positions.Count > 0)
+                {
+                    isDraw = false;
+                    break;
+                }
+            }
+
+            return isDraw;
+        }
+
+
+
+
         public void ResetSelection()
         {
             if (this.lastSelected == -1)
@@ -507,8 +557,24 @@ namespace ChessGame
                     chessFigure1.FigureGroup,
                     ImageBuilder.GetImageName(chessFigure1.FigureGroup, pawnPromotionWindow.SelectedFigureType)
                 );
-                
-                if(Turn==FigureGroup.Black)
+                switch(newFig.FigureType)
+                {
+                    case FigureType.Queen:
+                        ((Queen)(newFig)).FigureSelected += new MouseButtonEventHandler(this.FigureSelectedHandler);
+                        break;
+                    case FigureType.Rock:
+                        ((Rock)(newFig)).FigureSelected += new MouseButtonEventHandler(this.FigureSelectedHandler);
+                        break;
+                    case FigureType.Bishop:
+                        ((Bishop)(newFig)).FigureSelected += new MouseButtonEventHandler(this.FigureSelectedHandler);
+                        break;
+                    case FigureType.Knight:
+                        ((Knight)(newFig)).FigureSelected += new MouseButtonEventHandler(this.FigureSelectedHandler);
+                        break;
+                }
+
+
+                if (Turn==FigureGroup.Black)
                     newFig.Image.LayoutTransform = new ScaleTransform(-1, -1);
 
                 ChessFigures.Add(newFig);
@@ -517,7 +583,18 @@ namespace ChessGame
 
 
             if (PosIsCheck(ChessFigures))
-                MessageBox.Show("Шах");
+            {
+                if (PosIsMate(ChessFigures))
+                    MessageBox.Show("Победа " + ((Turn == FigureGroup.Black) ? "белых" : "черных"), "Объявлен мат!");
+                else
+                    MessageBox.Show("Шах");
+            }
+            else
+                if(PosIsDraw(ChessFigures))
+            {
+                MessageBox.Show("Ничья");
+            }
+                
         }
 
         private void Rooking(bool isShortDirection, FigureGroup figureGroup)

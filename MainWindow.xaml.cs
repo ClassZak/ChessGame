@@ -127,47 +127,13 @@ namespace ChessGame
 
             if(!(figure is null || board is null))
             {
-                string filemane = "FigureImages/";
-
-
-                if (figure.FigureGroup == FigureGroup.White)
-                    filemane += "w";
-                else
-                    filemane += "b";
-
-                switch(figure.FigureType)
-                {
-                    case FigureType.Pawn:
-                        filemane += "P";
-                        break;
-                    case FigureType.Queen:
-                        filemane += "Q";
-                        break;
-                    case FigureType.Knight:
-                        filemane += "N";
-                        break;
-                    case FigureType.King:
-                        filemane += "K";
-                        break;
-                    case FigureType.Bishop:
-                        filemane += "B";
-                        break;
-                    case FigureType.Rock:
-                        filemane += "R";
-                        break;
-                }
-                filemane += ".png";
-
-                System.Windows.Controls.Image image=ImageBuilder.CreateImage(filemane);
+                System.Windows.Controls.Image image=
+                    ImageBuilder.CreateImage(ImageBuilder.GetImageName(figure.FigureGroup,figure.FigureType));
 
                 if(figure.FigureGroup==FigureGroup.White)
-                {
                     CapturedWhiteGrid.Children.Add(image);
-                }
                 else
-                {
                     CapturedBlackGrid.Children.Add(image);
-                }
             }
         }
         private void ChangeMoveDescriptionHandler(object sender, EventArgs eventArgs)
