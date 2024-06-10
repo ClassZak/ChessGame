@@ -32,9 +32,9 @@
         </Menu>
 
 
-        <Grid Grid.Row="1">
-            <TextBox IsReadOnly="True" Name="MoveDescrTB"/>
-        </Grid>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <RichTextBox IsReadOnly="True" Name="MoveDescrTB" Background="LightGray"/>
+        </ScrollViewer>
 
 
         <Viewbox Stretch="Uniform" Grid.Column="1" Grid.Row="1">
@@ -48,6 +48,8 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
+
+                
 
                 <Grid Width="160" Background="White">
                     <StackPanel>
@@ -87,6 +89,10 @@
                     >
                     <Run Foreground="White" FontSize="20" FontWeight="Bold">Ход белых</Run>
                 </TextBlock>
+
+                <Border BorderBrush="Black" Grid.ColumnSpan="3"
+                    BorderThickness="2"
+                    />
             </Grid>
 
         </Viewbox>

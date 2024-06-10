@@ -25,7 +25,6 @@ namespace ChessGame
         private Board _board;
         public static MediaPlayer MediaPlayer;
         private string[] TurnDescription = { "Ход белых", "Ход чёрных" };
-        StringBuilder movesDesc = new StringBuilder();
         uint moveNumber = 0;
         public MainWindow()
         {
@@ -35,6 +34,7 @@ namespace ChessGame
             thread.Start();
             InitCells();
         }
+        
         public void RunGame()
         {
             _board= new Board(this.Board);
@@ -104,9 +104,8 @@ namespace ChessGame
             ChangeMoveDescription(FigureGroup.White);
             EndGameMenuButton.IsEnabled = true;
 
-            movesDesc.Clear();
+            MoveDescrTB.Document.Blocks.Clear();
             moveNumber = 0;
-            this.MoveDescrTB.Text = "";
         }
 
         private void ExitGame(object sender, RoutedEventArgs e)
@@ -184,14 +183,18 @@ namespace ChessGame
             EndGameMenuButton.IsEnabled = false;
         }
 
+
+
+
         void DescriptionHandler(object sender,EventArgs eventArgs)
         {
             MoveDescriptionEventArgs moveDescriptionEventArgs= eventArgs as MoveDescriptionEventArgs;
 
             if (moveDescriptionEventArgs is null) return;
 
-            movesDesc.AppendLine((++moveNumber).ToString() + $" {moveDescriptionEventArgs.MoveDescript}");
-            this.MoveDescrTB.Text=movesDesc.ToString();
+            MoveDescrTB.AppendText($"{(++moveNumber).ToString()}. {moveDescriptionEventArgs.MoveDescript}\r",
+    new SolidColorBrush((moveNumber % 2 == 0) ? Colors.Black : Colors.White));
+
         }
     }
 }
