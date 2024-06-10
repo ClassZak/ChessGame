@@ -85,6 +85,10 @@
     </Compile>
     <Compile Include="RchTextBox.cs" />
     <Compile Include="SoundKind.cs" />
+    <Compile Include="Statistic.cs" />
+    <Compile Include="StatWindow.xaml.cs">
+      <DependentUpon>StatWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -105,6 +109,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="PawnPromotionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StatWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

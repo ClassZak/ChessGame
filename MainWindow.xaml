@@ -29,6 +29,11 @@
                 <Separator/>
                 <MenuItem Header="Выход" Click="ExitGame"/>
             </MenuItem>
+            <MenuItem Header="Статистика">
+                <MenuItem Header="Статистика" Click="OpenStat"/>
+                <Separator/>
+                <MenuItem Header="Очистить статистику" Click="StatClear"/>
+            </MenuItem>
         </Menu>
 
 

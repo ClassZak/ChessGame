@@ -25,10 +25,12 @@ namespace ChessGame
         private Board _board;
         public static MediaPlayer MediaPlayer;
         private string[] TurnDescription = { "Ход белых", "Ход чёрных" };
+        Statistic Statistic = new Statistic("Statistic.bin");
         uint moveNumber = 0;
         public MainWindow()
         {
             InitializeComponent();
+
             RunGame();
             Thread thread = new Thread(UIUpdate);
             thread.Start();
@@ -117,12 +119,25 @@ namespace ChessGame
 
         private void EndGame(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Игра завершена!");
+            MessageBoxResult messageBoxResult=
+            MessageBox.Show("Вы уверены сдаться?", "Завершение партии", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (messageBoxResult == MessageBoxResult.No || messageBoxResult == MessageBoxResult.None)
+                return;
+
+            MessageBox.Show($"{(_board.Turn==FigureGroup.White ? "Белые" : "Чёрные")} сдались","Игра завершена!");
+            if(_board.Turn==FigureGroup.White)
+                ++Statistic.BlackWons;
+            else
+                ++Statistic.WhiteWons;
+            Statistic.Save();
 
             MessageBoxResult result = MessageBox.Show("Начать сначала?", "Новая игра", MessageBoxButton.YesNo);
 
             if (result == MessageBoxResult.Yes)
                 NewGame(sender, e);
+            else
+                Close();
         }
 
         private void FigureCaptured(object sender, EventArgs e)
@@ -181,6 +196,17 @@ namespace ChessGame
             DescriptionTable.FontSize = 20;
             DescriptionTable.FontWeight = FontWeights.Bold;
             EndGameMenuButton.IsEnabled = false;
+
+            if(gameEndedEventArgs.IsDraw)
+                ++Statistic.Draws;
+            else
+            {
+                if(gameEndedEventArgs.WinGroup==FigureGroup.White)
+                    ++Statistic.BlackWons;
+                else
+                    ++Statistic.WhiteWons;
+            }
+            Statistic.Save();
         }
 
 
@@ -192,8 +218,21 @@ namespace ChessGame
 
             if (moveDescriptionEventArgs is null) return;
 
-            MoveDescrTB.AppendText($"{(++moveNumber).ToString()}. {moveDescriptionEventArgs.MoveDescript}\r",
-    new SolidColorBrush((moveNumber % 2 == 0) ? Colors.Black : Colors.White));
+            MoveDescrTB.AppendText($"{++moveNumber}. {moveDescriptionEventArgs.MoveDescript}\r",
+            new SolidColorBrush((moveNumber % 2 == 0) ? Colors.Black : Colors.White));
+
+        }
+
+        private void StatClear(object sender, RoutedEventArgs e)
+        {
+            Statistic.BlackWons = Statistic.WhiteWons = Statistic.Draws = 0;
+            Statistic.Save();
+        }
+
+        private void OpenStat(object sender, RoutedEventArgs e)
+        {
+            StatWindow statWindow = new StatWindow(Statistic.WhiteWons, Statistic.BlackWons, Statistic.Draws);
+            statWindow.ShowDialog();
 
         }
     }
