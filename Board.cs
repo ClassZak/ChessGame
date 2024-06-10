@@ -423,12 +423,21 @@ namespace ChessGame
                 }
             }
 
-            if(
+            {
+                List<Point> moves = ((King)
+                (ChessFigures.Find(x => x.FigureType == FigureType.King && x.FigureGroup == Turn)))
+                .GetMoveCells(ChessFigures);
+                moves.RemoveAll(x => KingDangerousMove(ChessFigures.Find(el => el.FigureGroup == Turn && el.FigureType == FigureType.King), x, ChessFigures));
+
+                if(moves.Count>0)
+                    isMate = false;
+            }
+/*            if(
                 ((King)
                 (ChessFigures.Find(x=>x.FigureType==FigureType.King && x.FigureGroup==Turn)))
                 .GetMoveCells(ChessFigures).Count>0
                )
-                isMate = false;
+                isMate = false;*/
 
             return isMate;
         }
