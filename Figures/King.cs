@@ -43,7 +43,7 @@ namespace ChessGame
                 if (chessFigure.FigureGroup == this.FigureGroup)
                     continue;
 
-                if(chessFigure.GetType().Name=="King")
+                if(chessFigure.FigureType==FigureType.King && chessFigure.FigureGroup!=FigureGroup)
                 {
                     if(((King)(chessFigure)).GetDefaultMoveCells().Contains(point))
                     {
@@ -56,11 +56,14 @@ namespace ChessGame
                 List<ChessFigure> currectCheckList = new List<ChessFigure>(chessFigures);
                 // Remove elements
                 currectCheckList.Remove(this);
-                currectCheckList.RemoveAll
-                (
-                    x=>(x.FigureGroup != this.FigureGroup)
-                    && this.GetDefaultMoveCells().Contains(new Point(x.X,x.Y))
-                );
+                if(point.X!=X && point.Y!=Y)
+                {
+                    currectCheckList.RemoveAll
+                    (
+                        x=>(x.FigureGroup != this.FigureGroup)
+                        && this.GetDefaultMoveCells().Contains(new Point(x.X,x.Y))
+                    );
+                }
 
                 if (chessFigure.GetAttackedMoveCells(currectCheckList).Contains(point))
                 {
@@ -165,6 +168,7 @@ namespace ChessGame
             points.RemoveAll(x => !Board.ValidCell(x) || PositionChecked(chessFigures,new Point(x.X,x.Y)));
             points.RemoveAll(x =>
             !(chessFigures.Find(y => y.X == x.X && y.Y == x.Y && y.FigureGroup == this.FigureGroup) is null));
+            points.RemoveAll(x=>PositionChecked(chessFigures, new Point(x.X,x.Y)));
 
 
 
