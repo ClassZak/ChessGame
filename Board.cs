@@ -343,10 +343,58 @@ namespace ChessGame
             }
             checkList.RemoveAll(x => x.X == point.X && x.Y == point.Y);
             checkList.Find(x => x == figure).Move(point);
-            King king =
-                (King)(ChessFigures.Find(x => x.FigureType == FigureType.King && x.FigureGroup == figure.FigureGroup));
 
-            return king.PositionChecked(checkList, new Point(king.X, king.Y));
+            if(figure.FigureType!=FigureType.King)
+            {
+                King king =
+                    (King)(ChessFigures.Find(x => x.FigureType == FigureType.King && x.FigureGroup == figure.FigureGroup));
+
+                return king.PositionChecked(checkList, new Point(king.X, king.Y));
+            }
+            else
+            {
+                checkList = new List<ChessFigure>();
+                foreach (ChessFigure fig in chessFiguresArg)
+                {
+                    checkList.Add
+                    (
+                        FigureBuilder.CreateFigure
+                        (
+                            fig.X,
+                            fig.Y,
+                            fig.FigureType,
+                            fig.FigureGroup,
+                            ImageBuilder.GetImageName(fig.FigureGroup, fig.FigureType)
+                        )
+                    );
+                }
+                bool res = false;
+                King king = ((King)(
+                checkList.Find(x => x.FigureGroup ==figure.FigureGroup && x.FigureType == FigureType.King)));
+                king.Move(point);
+                try
+                {
+                    checkList.RemoveAll(x => x.X == king.X && x.Y == king.Y);
+                }
+                catch
+                {
+
+                }
+                foreach (ChessFigure f in checkList)
+                {
+                    if (f.FigureType == king.FigureType && f.FigureGroup == king.FigureGroup)
+                        continue;
+                    if (f.FigureGroup == king.FigureGroup)
+                        continue;
+
+                    if (f.GetAttackedMoveCells(checkList).Contains(new Point(king.X, king.Y)))
+                    {
+                        res = true;
+                        break;
+                    }
+                }
+                return res;
+            }
         }
 
 
@@ -471,7 +519,7 @@ namespace ChessGame
             //Steps
             movesGridCollection.Clear();
             List<Point> vectors=chessFigure.GetMoveCells(this.ChessFigures);
-            if (ChessFigures.Find(x => x.Selected == true).FigureType != FigureType.King)
+            //if (ChessFigures.Find(x => x.Selected == true).FigureType != FigureType.King)
                 vectors.RemoveAll(x => KingDangerousMove(ChessFigures.Find(el => el.Selected == true), x, ChessFigures));
             for(int i=0; i<vectors.Count;++i)
             {
