@@ -26,6 +26,7 @@ namespace ChessGame
         public GameType _gameType=GameType.Default;
         public List<object> movesGridCollection=new List<object>();
         public event EventHandler GameEndedEvent;
+        public event EventHandler SendDescription;
         public bool NeedRotate {  get; private set; }
 
 
@@ -486,6 +487,9 @@ namespace ChessGame
 
         public void MoveChosen(object sender, MouseButtonEventArgs mouseEventArgs)
         {
+            string moveInfo = "";
+            bool rookingMove = false;
+
             Point point = CoordsFromMargin(((Rectangle)(sender)).Margin);
             SoundKind soundKind=SoundKind.None;
 
@@ -498,6 +502,7 @@ namespace ChessGame
                 {
                     if (point.X == 3 || point.X == 7)
                     {
+                        rookingMove = true;
                         Rooking(point.X==7,chessFigure.FigureGroup);
                         if(soundKind==SoundKind.None)
                             soundKind = SoundKind.Rooking;
@@ -508,7 +513,31 @@ namespace ChessGame
 
             try
             {
-                if(!(ChessFigures.Find(x=>x.X==point.X && x.Y==point.Y) is null))
+                switch (ChessFigures.Find(x => x.Selected == true).FigureType)
+                {
+                    case FigureType.Pawn:
+                        moveInfo += $"{ConverterCoords.DigitToLetter(ChessFigures.Find(x => x.Selected == true).X)}{ChessFigures.Find(x => x.Selected == true).Y}";
+                        break;
+
+                    case FigureType.Queen:
+                        moveInfo += "Q";
+                        break;
+                    case FigureType.Knight:
+                        moveInfo += "N";
+                        break;
+                    case FigureType.King:
+                        moveInfo += "K";
+                        break;
+                    case FigureType.Bishop:
+                        moveInfo += "B";
+                        break;
+                    case FigureType.Rock:
+                        moveInfo += "R";
+                        break;
+                }
+                moveInfo += $"{ConverterCoords.DigitToLetter((byte)point.X)}{point.Y}";
+
+                if (!(ChessFigures.Find(x=>x.X==point.X && x.Y==point.Y) is null))
                 {
                     if (!(FigureCaptured is null))
                         FigureCaptured
@@ -529,6 +558,7 @@ namespace ChessGame
                 {
                     if (soundKind == SoundKind.None)
                         soundKind = SoundKind.Caption;
+                    moveInfo += "x";
                 }
                 else
                 {
@@ -580,15 +610,19 @@ namespace ChessGame
                 {
                     case FigureType.Queen:
                         ((Queen)(newFig)).FigureSelected += new MouseButtonEventHandler(this.FigureSelectedHandler);
+                        moveInfo += "Q";
                         break;
                     case FigureType.Rock:
                         ((Rock)(newFig)).FigureSelected += new MouseButtonEventHandler(this.FigureSelectedHandler);
+                        moveInfo += "R";
                         break;
                     case FigureType.Bishop:
                         ((Bishop)(newFig)).FigureSelected += new MouseButtonEventHandler(this.FigureSelectedHandler);
+                        moveInfo += "B";
                         break;
                     case FigureType.Knight:
                         ((Knight)(newFig)).FigureSelected += new MouseButtonEventHandler(this.FigureSelectedHandler);
+                        moveInfo += "N";
                         break;
                 }
 
@@ -614,20 +648,32 @@ namespace ChessGame
                             new GameEndedEventArgs
                             (message,Turn,false)
                         );
+                    moveInfo += "#";
+
+
                     GameEnded = true;
                     MessageBox.Show(message, "Объявлен мат!");
                 }
                 else
+                {
+                    moveInfo += "+";
                     MessageBox.Show("Шах");
+                }
+                    
             }
             else
                 if(PosIsDraw(ChessFigures))
             {
                 if (!(GameEndedEvent is null))
                     GameEndedEvent(this, new GameEndedEventArgs("Ничья",Turn,true));
+                moveInfo += "=";
+
                 GameEnded = true;
                 MessageBox.Show("Ничья");
             }
+
+            if (!(SendDescription is null) && !rookingMove)
+                SendDescription(this, new MoveDescriptionEventArgs(moveInfo));
             needRedraw = true;
         }
 
@@ -641,6 +687,8 @@ namespace ChessGame
                     x.X == 8 &&
                     x.Y == ((figureGroup == FigureGroup.White) ? 1 : 8)
                 ).Move(6, ((figureGroup == FigureGroup.White) ? 1u : 8u));
+                if (!(SendDescription is null))
+                    SendDescription(this, new MoveDescriptionEventArgs("O-O"));
             }
             else
             {
@@ -650,6 +698,8 @@ namespace ChessGame
                     x.X == 1 &&
                     x.Y == ((figureGroup == FigureGroup.White) ? 1 : 8)
                 ).Move(4, ((figureGroup == FigureGroup.White) ? 1u : 8u));
+                if (!(SendDescription is null))
+                    SendDescription(this, new MoveDescriptionEventArgs("O-O-O"));
             }
         }
         #endregion

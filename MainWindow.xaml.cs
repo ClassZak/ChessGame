@@ -25,6 +25,8 @@ namespace ChessGame
         private Board _board;
         public static MediaPlayer MediaPlayer;
         private string[] TurnDescription = { "Ход белых", "Ход чёрных" };
+        StringBuilder movesDesc = new StringBuilder();
+        uint moveNumber = 0;
         public MainWindow()
         {
             InitializeComponent();
@@ -39,6 +41,7 @@ namespace ChessGame
             _board.FigureCaptured += new EventHandler(FigureCaptured);
             _board.FigureMoved += new EventHandler(ChangeMoveDescriptionHandler);
             _board.GameEndedEvent += new EventHandler(GameEndedEventHandler);
+            _board.SendDescription += new EventHandler(DescriptionHandler);
         }
 
 
@@ -100,6 +103,10 @@ namespace ChessGame
             CapturedBlackGrid.Children.Clear();
             ChangeMoveDescription(FigureGroup.White);
             EndGameMenuButton.IsEnabled = true;
+
+            movesDesc.Clear();
+            moveNumber = 0;
+            this.MoveDescrTB.Text = "";
         }
 
         private void ExitGame(object sender, RoutedEventArgs e)
@@ -158,7 +165,6 @@ namespace ChessGame
             }
         }
 
-
         private void GameEndedEventHandler(object sender,EventArgs eventArgs)
         {
             GameEndedEventArgs gameEndedEventArgs= eventArgs as GameEndedEventArgs;
@@ -176,6 +182,16 @@ namespace ChessGame
             DescriptionTable.FontSize = 20;
             DescriptionTable.FontWeight = FontWeights.Bold;
             EndGameMenuButton.IsEnabled = false;
+        }
+
+        void DescriptionHandler(object sender,EventArgs eventArgs)
+        {
+            MoveDescriptionEventArgs moveDescriptionEventArgs= eventArgs as MoveDescriptionEventArgs;
+
+            if (moveDescriptionEventArgs is null) return;
+
+            movesDesc.AppendLine((++moveNumber).ToString() + $" {moveDescriptionEventArgs.MoveDescript}");
+            this.MoveDescrTB.Text=movesDesc.ToString();
         }
     }
 }
