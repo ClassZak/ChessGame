@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -97,10 +98,13 @@ namespace ChessGame
 
         public override void SelectionHandling(object sender, MouseButtonEventArgs mouseEventArgs)
         {
-            Selected=!Selected;
-
+            Selected = !Selected;
             if (!(FigureSelected is null))
                 FigureSelected(this,mouseEventArgs);
+        }
+        public void SetTurndedTrue()
+        {
+            Turned = true;
         }
     }
 }

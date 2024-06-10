@@ -18,59 +18,6 @@ namespace ChessGame
         public override List<Point> GetAttackedMoveCells(List<ChessFigure> chessFigures)
         {
             return GetMoveCells(chessFigures);
-            List<Point> points = new List<Point>();
-
-            //Hor
-            bool stop = false;
-            for (uint i = X - 1; i != 0; --i)
-            {
-                if (stop)
-                    break;
-
-                if (!(chessFigures.Find(el => el.X == i && el.Y == Y) is null))
-                    stop = true;
-
-                points.Add(new Point(i, Y));
-            }
-
-            stop = false;
-            for (uint i = X + 1; i != 9; ++i)
-            {
-                if (stop)
-                    break;
-
-                if (!(chessFigures.Find(el => el.X == i && el.Y == Y) is null))
-                    stop = true;
-
-                points.Add(new Point(i, Y));
-            }
-            //Vert
-            stop = false;
-            for (uint i = Y - 1; i != 0; --i)
-            {
-                if (stop)
-                    break;
-
-                if (!(chessFigures.Find(el => el.X == X && el.Y == i) is null))
-                    stop = true;
-
-                points.Add(new Point(X, i));
-            }
-
-            stop = false;
-            for (uint i = Y + 1; i != 9; ++i)
-            {
-                if (stop)
-                    break;
-
-                if (!(chessFigures.Find(el => el.X == X && el.Y == i) is null))
-                    stop = true;
-
-                points.Add(new Point(X, i));
-            }
-            points.RemoveAll(x => !Board.ValidCell(x));
-
-            return points;
         }
 
         public override List<Point> GetMoveCells(List<ChessFigure> chessFigures)

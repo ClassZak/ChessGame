@@ -120,7 +120,7 @@ namespace ChessGame
         private void EndGame(object sender, RoutedEventArgs e)
         {
             MessageBoxResult messageBoxResult=
-            MessageBox.Show("Вы уверены сдаться?", "Завершение партии", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBox.Show("Вы уверены что хотите сдаться?", "Завершение партии", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (messageBoxResult == MessageBoxResult.No || messageBoxResult == MessageBoxResult.None)
                 return;

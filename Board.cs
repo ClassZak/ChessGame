@@ -19,6 +19,7 @@ namespace ChessGame
     {
         private List<ChessFigure> ChessFigures = new List<ChessFigure>();
         private bool needRedraw = false;
+        EnPassantInfo enPassantInfo=new EnPassantInfo();
         public FigureGroup Turn { get; private set; }
         public bool GameEnded { get; private set; }
         private int lastSelected = -1;
@@ -466,7 +467,11 @@ namespace ChessGame
         {
             if (this.lastSelected == -1)
                 return;
-            this.ChessFigures.Find(x => x.Selected == true).Selected=false;
+            try
+            {
+                this.ChessFigures.Find(x => x.Selected == true).Selected = false;
+            }
+            catch { }
             this.lastSelected = -1;
             movesGridCollection.Clear();
             needRedraw = true;
@@ -530,7 +535,17 @@ namespace ChessGame
             List<Point> vectors=chessFigure.GetMoveCells(this.ChessFigures);
             //if (ChessFigures.Find(x => x.Selected == true).FigureType != FigureType.King)
                 vectors.RemoveAll(x => KingDangerousMove(ChessFigures.Find(el => el.Selected == true), x, ChessFigures));
-            for(int i=0; i<vectors.Count;++i)
+
+
+            if (chessFigure.FigureType != FigureType.Pawn)
+                enPassantInfo.ShowPassantMove = false;
+            else
+                enPassantInfo.ShowPassantMove = chessFigure.Y == enPassantInfo.Pos.Y && Math.Abs(chessFigure.X - enPassantInfo.Pos.X) == 1;
+            if (enPassantInfo.ShowPassantMove)
+                vectors.Add(new Point(enPassantInfo.Pos.X,enPassantInfo.Pos.Y+(Turn==FigureGroup.White ? 1 : -1)));
+
+
+            for (int i=0; i<vectors.Count;++i)
             {
                 Rectangle rectangle = new Rectangle();
                 rectangle.Margin = MarginFromCoords(vectors.ElementAt(i));
@@ -552,8 +567,30 @@ namespace ChessGame
 
             ChessFigure chessFigure = this.ChessFigures.Find(x => x.Selected);
 
+            //En passant
+            if (chessFigure.FigureType == FigureType.Pawn)
+            {
+                if(!chessFigure.Turned)
+                {
+                    ((Pawn)(chessFigure)).SetTurndedTrue();
 
-            if(chessFigure.GetType().Name=="King")
+                    enPassantInfo.IsPassant = point.Y == 4 || point.Y == 5;
+                    if(enPassantInfo.IsPassant)
+                        enPassantInfo.Pos=new Point(point.X, point.Y);
+                }
+                else
+                if(point.X ==enPassantInfo.Pos.X && point.Y==enPassantInfo.Pos.Y+(Turn==FigureGroup.White ? 1:-1))
+                {
+                    enPassantInfo.EnPassantActived = enPassantInfo.IsPassant;
+                }
+            }
+            else
+                enPassantInfo.IsPassant = false;
+
+
+
+
+            if (chessFigure.FigureType==FigureType.King)
             {
                 if(!chessFigure.Turned)
                 {
@@ -607,9 +644,21 @@ namespace ChessGame
                         );
                 }
 
+                try
+                {
+                    if(enPassantInfo.EnPassantActived)
+                    {
+                        enPassantInfo.EnPassantActived = false;
+                        this.ChessFigures.RemoveAll(x => x.X == point.X && x.Y == point.Y+(Turn==FigureGroup.White ? -1 : 1));
+                    }
+                }
+                catch { }
+                
 
                 int del=
                 this.ChessFigures.RemoveAll(x => x.X == point.X && x.Y == point.Y);
+
+                
 
                 if (del != 0)
                 {

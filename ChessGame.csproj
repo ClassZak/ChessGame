@@ -73,6 +73,7 @@
     </ApplicationDefinition>
     <Compile Include="Builders\FigureBuilder.cs" />
     <Compile Include="ConverterCoords.cs" />
+    <Compile Include="EnPassantInfo.cs" />
     <Compile Include="Enums\GameType.cs" />
     <Compile Include="EventArgsClasses\FigureCapturedEventArg.cs" />
     <Compile Include="EventArgsClasses\MoveDescriptionEventArgs.cs" />
