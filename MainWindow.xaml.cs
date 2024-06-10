@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +31,16 @@ namespace ChessGame
         uint moveNumber = 0;
         public MainWindow()
         {
+            if (ResoursecNotFound())
+            {
+                MessageBox.Show("Файлы ресурсов не найдены", "Ошибка запуска", MessageBoxButton.OK, MessageBoxImage.Error);
+                Close();
+                return;
+            }
+
             InitializeComponent();
+
+
 
             RunGame();
             Thread thread = new Thread(UIUpdate);
@@ -234,6 +245,27 @@ namespace ChessGame
             StatWindow statWindow = new StatWindow(Statistic.WhiteWons, Statistic.BlackWons, Statistic.Draws);
             statWindow.ShowDialog();
 
+        }
+        bool ResoursecNotFound()
+        {
+            const string imageFolder = "FigureImages";
+            const string soundFolder = "Sounds";
+            return !File.Exists(System.IO.Path.Combine(imageFolder, "bB.png")) ||
+            !File.Exists(System.IO.Path.Combine(imageFolder, "bK.png")) ||
+            !File.Exists(System.IO.Path.Combine(imageFolder, "bN.png")) ||
+            !File.Exists(System.IO.Path.Combine(imageFolder, "bP.png")) ||
+            !File.Exists(System.IO.Path.Combine(imageFolder, "bQ.png")) ||
+            !File.Exists(System.IO.Path.Combine(imageFolder, "bR.png")) ||
+            !File.Exists(System.IO.Path.Combine(imageFolder, "wB.png")) ||
+            !File.Exists(System.IO.Path.Combine(imageFolder, "wK.png")) ||
+            !File.Exists(System.IO.Path.Combine(imageFolder, "wN.png")) ||
+            !File.Exists(System.IO.Path.Combine(imageFolder, "wP.png")) ||
+            !File.Exists(System.IO.Path.Combine(imageFolder, "wQ.png")) ||
+            !File.Exists(System.IO.Path.Combine(imageFolder, "wR.png")) ||
+
+            !File.Exists(System.IO.Path.Combine(soundFolder, "Caption.mp3")) ||
+            !File.Exists(System.IO.Path.Combine(soundFolder, "Move.mp3")) ||
+            !File.Exists(System.IO.Path.Combine(soundFolder, "Rooking.mp3"));
         }
     }
 }
